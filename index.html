@@ -356,7 +356,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-E8390DFF", DH = "6D36B85519F0AD3E";
+  var FP = "JSGQ-WEB-20261011-8235F591", DH = "6D36B85519F0AD3E";
 
   function makeTrace(){
     var d = new Date();
@@ -373,6 +373,10 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
                 shown:PAGE, cmp:[] };
   var CATS = ["央企在苏","省属国企","市属国企"];
   var CAT_CLS = {"央企在苏":"cen","省属国企":"soe","市属国企":"gov"};
+  // 江苏 13 个设区市；「苏州（常熟）」这类县级主体按所属设区市归并计数与筛选
+  var CITY13 = ["南京","无锡","徐州","常州","苏州","南通","连云港","淮安",
+                "盐城","扬州","镇江","泰州","宿迁"];
+  function baseCity(s){ return String(s || "").replace(/[（(].*$/, "").trim(); }
   var BYID = {};
   DATA.forEach(function(r){ BYID[r.id] = r; });
 
@@ -402,7 +406,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   function match(r){
     if(state.cats.length && state.cats.indexOf(r["所属类别"]) < 0) return false;
     if(state.sector && r["板块"] !== state.sector) return false;
-    if(state.city && r["所属地市"] !== state.city) return false;
+    if(state.city && baseCity(r["所属地市"]) !== state.city) return false;
     if(state.level && r["层级"] !== state.level) return false;
     if(state.q){
       var q = state.q.toLowerCase();
@@ -487,8 +491,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     rows.forEach(function(r){ c[r["所属类别"]] = (c[r["所属类别"]]||0) + 1; });
     $("mix").textContent = "央企在苏 " + (c["央企在苏"]||0) +
       " · 省属国企 " + (c["省属国企"]||0) + " · 市属国企 " + (c["市属国企"]||0) +
-      "　覆盖 " + new Set(rows.map(function(r){ return r["所属地市"]; })).size +
-      " 个地市 · " + new Set(rows.map(function(r){ return r["板块"]; })).size + " 个板块";
+      "　覆盖 " + new Set(rows.map(function(r){ return baseCity(r["所属地市"]); })
+        .filter(function(c){ return CITY13.indexOf(c) >= 0; })).size +
+      " 个设区市 · " + new Set(rows.map(function(r){ return r["板块"]; })).size + " 个板块";
     $("hint").textContent = rows.length
       ? "共 " + rows.length + " 家。点卡片上的「加入对比」可挑出最多 4 家横向比较。"
       : "";
@@ -580,7 +585,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
       vals.map(function(v){ return "<option value='" + esc(v) + "'>" + esc(v) + "</option>"; }).join("");
   }
   fillsel($("sector"), uniq("板块"), "全部板块");
-  fillsel($("city"), uniq("所属地市"), "全部地市");
+  fillsel($("city"), CITY13.filter(function(c){
+    return DATA.some(function(r){ return baseCity(r["所属地市"]) === c; });
+  }), "全部地市");
   fillsel($("level"), ["一级","二级","三级","四级"], "全部层级");
 
   $("q").addEventListener("input", function(e){
