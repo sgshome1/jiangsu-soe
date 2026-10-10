@@ -57,7 +57,7 @@ header,section,main{position:relative; z-index:1}
 .badge{display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 5px;
        margin-left:7px; border-radius:980px; background:var(--blue); color:#fff;
        font-size:11px; font-weight:600}
-.in-sheet{display:none}
+.row.in-sheet{display:none}
 .scrim{position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:7; opacity:0;
        pointer-events:none; transition:opacity .3s}
 .scrim.show{opacity:1; pointer-events:auto}
@@ -222,7 +222,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   .search{flex:1 1 auto; min-width:0}
   .act-share,.act-reset{display:none}
   .act-filter{display:inline-flex}
-  .in-sheet{display:flex}
+  .row.in-sheet{display:flex}
   .controls{padding:10px 0 10px}
   .filterblock{padding:0}
   #filters{position:fixed; left:0; right:0; bottom:0; z-index:9; background:#fff;
@@ -356,7 +356,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-739ADB73", DH = "739ADB73755A8B5B";
+  var FP = "JSGQ-WEB-20261011-592FCE73", DH = "739ADB73755A8B5B";
 
   function makeTrace(){
     var d = new Date();
