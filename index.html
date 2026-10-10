@@ -13,128 +13,159 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231f3864'/><text x='16' y='22' font-size='17' text-anchor='middle' fill='white' font-family='sans-serif'>苏</text></svg>">
 <style>
 :root{
-  --navy:#1f3864; --navy-2:#2b4a80; --ink:#111827; --muted:#6b7280;
-  --line:#e5e7eb; --bg:#f6f7f9; --card:#ffffff; --chip:#eef2fa;
-  --mark:#fff2a8;
+  --ink:#1d1d1f; --muted:#6e6e73; --muted-2:#86868b;
+  --bg:#f5f5f7; --card:#ffffff; --line:rgba(0,0,0,.08);
+  --accent:#0071e3; --accent-ink:#0066cc; --seg:rgba(120,120,128,.12);
+  --mark:#ffe9a8;
+  --sh-1:0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.05);
+  --sh-2:0 2px 6px rgba(0,0,0,.06), 0 14px 36px rgba(0,0,0,.10);
+  --r-lg:18px; --r-md:12px; --r-sm:9px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
   background:var(--bg); color:var(--ink);
-  font:15px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",
-       "Microsoft YaHei","Source Han Sans SC",sans-serif;
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",
+       "Hiragino Sans GB","Segoe UI","Microsoft YaHei UI","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
   -webkit-text-size-adjust:100%;
 }
-header{background:var(--navy); color:#fff; padding:18px 16px 16px}
-.wrap{max-width:1340px; margin:0 auto}
-h1{margin:0; font-size:19px; font-weight:600; letter-spacing:.2px}
-.sub{margin-top:6px; font-size:13px; color:#c7d3e8}
-.copyline{margin-top:7px; font-size:12px; color:#9fb2d4; letter-spacing:.2px}
-.copyline b{color:#dce6f7; font-weight:500}
+header.bar{
+  position:sticky; top:0; z-index:5;
+  background:rgba(245,245,247,.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--line);
+  padding:14px 20px 12px;
+}
+.wrap{max-width:1120px; margin:0 auto}
+h1{margin:0; font-size:21px; font-weight:600; letter-spacing:-.4px}
+.sub{margin-top:3px; font-size:12.5px; color:var(--muted)}
+.copyline{margin-top:5px; font-size:11.5px; color:var(--muted-2); letter-spacing:.1px}
+.copyline b{color:var(--muted); font-weight:500; white-space:nowrap}
 body::before{
   content:""; position:fixed; inset:-12%; z-index:2; pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27360%27%20height%3D%27200%27%3E%3Cg%20fill%3D%27%231f3864%27%20fill-opacity%3D%270.13%27%20font-family%3D%27sans-serif%27%20font-size%3D%2715%27%3E%3Ctext%20x%3D%276%27%20y%3D%2748%27%20transform%3D%27rotate%28-30%206%2048%29%27%3E%E7%89%88%E6%9D%83%E6%89%80%E6%9C%89%20%C2%B7%20%E7%A6%81%E6%AD%A2%E7%9B%97%E7%94%A8%20%C2%B7%20%E5%9C%AD%E7%85%9C%3C%2Ftext%3E%3Ctext%20x%3D%27196%27%20y%3D%27150%27%20transform%3D%27rotate%28-30%20196%20150%29%27%3E%E6%B1%9F%E8%8B%8F%E5%A4%AE%E5%9B%BD%E4%BC%81%E5%90%8D%E5%BD%95%20%C2%B7%20%E4%BB%85%E4%BE%9B%E4%B8%AA%E4%BA%BA%E5%8F%82%E8%80%83%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E"); background-repeat:repeat; opacity:.9;
 }
 header,main{position:relative; z-index:1}
-.trace{position:fixed; right:10px; bottom:9px; z-index:3; pointer-events:none;
-       font-size:11px; color:rgba(31,56,100,.45); letter-spacing:.3px;
-       background:rgba(255,255,255,.62); padding:2px 8px; border-radius:6px;
+.trace{position:fixed; right:12px; bottom:10px; z-index:3; pointer-events:none;
+       font-size:10.5px; color:rgba(29,29,31,.42); letter-spacing:.2px;
+       background:rgba(255,255,255,.66); padding:3px 10px; border-radius:999px;
+       -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
        font-variant-numeric:tabular-nums}
-main{padding:16px}
-.panel{background:var(--card); border:1px solid var(--line); border-radius:12px;
-       padding:14px; margin-bottom:14px}
-.searchrow{display:flex; gap:10px; flex-wrap:wrap}
-.search{flex:1 1 320px; position:relative}
+main{padding:20px}
+.panel{background:var(--card); border-radius:var(--r-lg); box-shadow:var(--sh-1);
+       padding:16px; margin-bottom:20px}
+.searchrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.search{flex:1 1 300px; position:relative}
 .search input{
-  width:100%; padding:12px 14px 12px 40px; font-size:16px; color:var(--ink);
-  border:1px solid var(--line); border-radius:10px; background:#fff; outline:none;
+  width:100%; padding:11px 14px 11px 38px; font-size:16px; color:var(--ink);
+  border:0; border-radius:var(--r-md); background:var(--seg); outline:none;
+  -webkit-appearance:none;
 }
-.search input:focus{border-color:var(--navy-2); box-shadow:0 0 0 3px rgba(43,74,128,.12)}
+.search input:focus{box-shadow:0 0 0 3.5px rgba(0,113,227,.18); background:#fff}
 .search svg{position:absolute; left:13px; top:50%; transform:translateY(-50%);
-            width:16px; height:16px; fill:none; stroke:var(--muted); stroke-width:2}
-.btn{border:1px solid var(--line); background:#fff; color:var(--ink);
-     padding:11px 14px; border-radius:10px; font-size:14px; cursor:pointer}
-.btn:hover{border-color:#c9d2e0}
-.btn.primary{background:var(--navy); border-color:var(--navy); color:#fff}
-.row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center}
-.row .lbl{font-size:12px; color:var(--muted); min-width:44px}
-.chips{display:flex; gap:8px; flex-wrap:wrap}
-.chip{border:1px solid var(--line); background:#fff; color:var(--ink);
-      padding:8px 13px; border-radius:999px; font-size:13px; cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
-select{padding:9px 10px; border:1px solid var(--line); border-radius:9px;
-       background:#fff; font-size:14px; color:var(--ink); max-width:230px}
-.stats{display:flex; gap:16px; flex-wrap:wrap; align-items:baseline;
-       margin-top:12px; padding-top:12px; border-top:1px dashed var(--line)}
+            width:15px; height:15px; fill:none; stroke:var(--muted-2); stroke-width:2.2}
+.btn{border:0; background:var(--seg); color:var(--ink); font-size:14px; font-weight:500;
+     padding:11px 16px; border-radius:980px; cursor:pointer;
+     transition:transform .16s cubic-bezier(.2,.7,.3,1), background .16s, box-shadow .16s}
+.btn:hover{background:rgba(120,120,128,.18)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent); color:#fff}
+.btn.primary:hover{background:var(--accent-ink)}
+.row{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; align-items:center}
+.lbl{font-size:12.5px; color:var(--muted); min-width:34px}
+.segmented{display:inline-flex; gap:2px; background:var(--seg); border-radius:980px; padding:3px}
+.seg{border:0; background:transparent; color:var(--ink); font-size:13.5px; font-weight:500;
+     padding:7px 14px; border-radius:980px; cursor:pointer;
+     transition:background .18s, box-shadow .18s, color .18s}
+.seg .n{color:var(--muted); font-size:12px; margin-left:3px; font-variant-numeric:tabular-nums}
+.seg[aria-pressed="true"]{background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px rgba(0,0,0,.04)}
+.seg[aria-pressed="true"] .n{color:var(--muted-2)}
+select{padding:9px 12px; border:0; border-radius:var(--r-sm); background:var(--seg);
+       font-size:13.5px; color:var(--ink); max-width:220px; font-weight:500;
+       -webkit-appearance:none; appearance:none;
+       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236e6e73' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+       background-repeat:no-repeat; background-position:right 11px center; padding-right:28px}
+.stats{display:flex; gap:18px; flex-wrap:wrap; align-items:baseline; margin-top:16px}
 .chk{display:inline-flex; align-items:center; gap:7px; font-size:13px;
      color:var(--ink); cursor:pointer; user-select:none; padding:6px 2px}
-.chk input{width:15px; height:15px; accent-color:var(--navy)}
-.stats b{font-size:22px; font-weight:600; color:var(--navy)}
+.chk input{width:15px; height:15px; accent-color:var(--accent)}
+.stats b{font-size:24px; font-weight:600; letter-spacing:-.5px}
 .stats span{font-size:13px; color:var(--muted)}
-.tablewrap{background:var(--card); border:1px solid var(--line);
-           border-radius:12px; overflow:hidden}
-table{width:100%; border-collapse:collapse; font-size:13.5px; table-layout:fixed}
-thead th{background:#f0f3f9; color:var(--navy); text-align:left; font-weight:600;
-         padding:10px 10px; border-bottom:1px solid var(--line); white-space:nowrap;
-         cursor:pointer; user-select:none}
-thead th.no{cursor:default}
-thead th .arrow{color:var(--muted); font-size:11px}
-tbody td{padding:9px 10px; border-bottom:1px solid #f1f2f4; vertical-align:top;
-         overflow-wrap:break-word}
-.nw{white-space:nowrap}
-table.hidesrc .col-src{display:none}
-tbody tr:hover{background:#fafbfd}
-.c{color:var(--muted); font-variant-numeric:tabular-nums}
-.nm{font-weight:500}
-.tag{display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px;
-     background:var(--chip); color:var(--navy-2); white-space:nowrap}
-.tag.gov{background:#eaf5ee; color:#276749}
-.tag.soe{background:#fdf1e7; color:#9a5b17}
-.tag.cen{background:#eaeefa; color:#2b4a80}
-.src{color:var(--muted); font-size:12.5px}
-mark{background:var(--mark); color:inherit; padding:0 1px; border-radius:2px}
-.more{text-align:center; padding:16px}
-.empty{padding:48px 16px; text-align:center; color:var(--muted)}
-footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted);
-       font-size:12.5px; line-height:1.7}
-.fpbox{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);
-       color:var(--navy-2); font-variant-numeric:tabular-nums; font-size:12.5px}
-.fpbox b{font-weight:600; letter-spacing:.4px}
-.fpnote{margin-top:6px; color:#9aa3b2; font-size:11.5px; line-height:1.75}
-@media (max-width:1100px){
-  table{table-layout:auto}
-  .wrap,footer{max-width:100%}
-}
-@media (max-width:820px){
+.toolbar{display:flex; align-items:center; justify-content:space-between; gap:12px;
+         flex-wrap:wrap; padding:0 4px 12px}
+.toolbar .hint{font-size:12.5px; color:var(--muted-2); flex:1 1 auto; min-width:0;
+               overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.toolbar label{flex:0 0 auto; display:inline-flex; align-items:center; gap:7px}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(430px,1fr)); gap:14px}
+.card{background:var(--card); border-radius:var(--r-lg); padding:16px 18px 14px;
+      box-shadow:var(--sh-1); transition:box-shadow .22s cubic-bezier(.2,.7,.3,1),
+      transform .22s cubic-bezier(.2,.7,.3,1)}
+.card:hover{box-shadow:var(--sh-2); transform:translateY(-2px)}
+.chead{display:flex; align-items:baseline; gap:9px}
+.idx{font-size:12px; color:var(--muted-2); font-variant-numeric:tabular-nums;
+     min-width:26px; font-weight:500}
+.name{margin:0; font-size:16.5px; font-weight:600; letter-spacing:-.3px;
+      line-height:1.35; flex:1 1 auto}
+.tag{flex:0 0 auto; font-size:11px; font-weight:500; padding:3px 9px;
+     border-radius:980px; white-space:nowrap}
+.tag.cen{background:rgba(0,113,227,.10); color:#0060c0}
+.tag.soe{background:rgba(255,149,0,.13); color:#a35a00}
+.tag.gov{background:rgba(52,199,89,.14); color:#1f7a3a}
+.meta{margin:7px 0 0 35px; font-size:12.5px; color:var(--muted); letter-spacing:.1px}
+.facts{margin:12px 0 0 35px; padding:11px 0 0; border-top:1px solid var(--line)}
+.facts div{display:flex; gap:10px; font-size:13px; padding:2.5px 0}
+.facts dt{flex:0 0 60px; color:var(--muted-2); font-size:12.5px}
+.facts dd{margin:0; color:var(--ink); flex:1 1 auto}
+details{margin:10px 0 0 35px}
+summary{font-size:12.5px; color:var(--accent); cursor:pointer; list-style:none;
+        display:inline-flex; align-items:center; gap:5px; font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"›"; font-size:15px; line-height:1; transition:transform .2s}
+details[open] summary::after{transform:rotate(90deg)}
+.srcbox{margin-top:8px; padding:11px 13px; background:var(--bg); border-radius:var(--r-md);
+        font-size:12.5px; color:var(--muted); line-height:1.7}
+.srcbox .st{color:var(--ink); font-weight:500}
+.more{text-align:center; padding:24px 0 8px}
+.empty{padding:60px 16px; text-align:center; color:var(--muted)}
+mark{background:var(--mark); color:inherit; padding:0 1px; border-radius:3px}
+footer{max-width:1120px; margin:0 auto; padding:26px 20px 40px; color:var(--muted-2);
+       font-size:12px; line-height:1.75}
+.fpbox{margin-top:12px; padding-top:12px; border-top:1px solid var(--line);
+       color:var(--muted); font-variant-numeric:tabular-nums; font-size:12px}
+.fpbox b{font-weight:600; letter-spacing:.3px}
+.fpnote{margin-top:6px; color:var(--muted-2); font-size:11.5px; line-height:1.8}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
   .search{flex:1 1 100%}
   .searchrow .btn{flex:0 1 auto}
-  body::before{opacity:.55}
-  .trace{font-size:10px; right:8px; bottom:6px}
-  .row .lbl{min-width:0}
-  .stats{gap:10px}
-  table,thead,tbody,tr,td{display:block}
-  thead{display:none}
-  tbody tr{border-bottom:1px solid var(--line); padding:10px 12px}
-  tbody tr:hover{background:#fff}
-  tbody td{border:0; padding:2px 0; display:flex; gap:8px}
-  tbody td::before{content:attr(data-l); flex:0 0 62px; color:var(--muted);
-                   font-size:12.5px; padding-top:1px}
-  table.hidesrc td.col-src{display:none}
-  select{max-width:100%}
+  .row select{flex:1 1 44%; max-width:none}
+  .trace{font-size:10px; right:8px; bottom:7px}
+  main{padding:14px}
+  body::before{opacity:.6}
+  .facts dt{flex:0 0 56px}
+}
+@media (max-width:560px){
+  .segmented{display:flex; width:100%}
+  .seg{flex:1 1 0; text-align:center; padding:8px 6px; font-size:12.5px}
+  .seg .n{display:block; margin:1px 0 0; font-size:11px}
+  .card{padding:14px 15px 12px}
+  .meta,.facts,details{margin-left:0}
 }
 </style>
 </head>
 <body>
-<header>
+<header class="bar">
   <div class="wrap">
-    <h1>江苏央国企名录 · 检索版</h1>
-    <div class="sub" id="sub">共 832 家主体｜13 市 × 33 个行业板块｜数据截止 2026-10</div>
+    <h1>江苏央国企名录</h1>
+    <div class="sub" id="sub">832 家主体 · 13 市 · 33 个行业板块 · 数据截止 2026-10</div>
     <div class="copyline">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜ 版本指纹 <b id="fp"></b></div>
   </div>
 </header>
 
 <main class="wrap">
-  <div class="panel">
+  <section class="panel">
     <div class="searchrow">
       <div class="search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle>
@@ -142,59 +173,41 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
         <input id="q" type="search" autocomplete="off"
                placeholder="搜索企业名称、集团、行业，例如：能源、地铁、烟草" aria-label="关键词">
       </div>
-      <button class="btn" id="share">复制本页链接</button>
-      <button class="btn" id="csv">导出结果</button>
+      <button class="btn primary" id="share">复制本页链接</button>
       <button class="btn" id="reset">重置</button>
     </div>
 
     <div class="row">
-      <span class="lbl">类别</span>
-      <div class="chips" id="cats"></div>
+      <div class="segmented" id="cats" role="group" aria-label="所属类别"></div>
     </div>
 
     <div class="row">
-      <span class="lbl">板块</span>
       <select id="sector" aria-label="板块"></select>
-      <span class="lbl">地市</span>
       <select id="city" aria-label="地市"></select>
-      <span class="lbl">层级</span>
       <select id="level" aria-label="层级"></select>
-      <label class="chk"><input type="checkbox" id="showsrc"> 显示来源说明</label>
     </div>
 
     <div class="stats">
       <div><b id="n">0</b> <span>家命中</span></div>
       <div id="mix" class="c"></div>
     </div>
+  </section>
+
+  <div class="toolbar">
+    <span class="hint" id="hint"></span>
+    <label class="lbl">排序 <select id="sort" aria-label="排序方式">
+      <option value="id">序号</option>
+      <option value="企业名称">企业名称</option>
+      <option value="所属地市">地市</option>
+      <option value="板块">板块</option>
+      <option value="层级">层级</option>
+      <option value="集团归属">集团归属</option>
+    </select></label>
   </div>
 
-  <div class="tablewrap">
-    <table id="t">
-      <colgroup>
-        <col style="width:52px"><col style="width:236px"><col style="width:80px">
-        <col style="width:66px"><col style="width:106px"><col style="width:54px">
-        <col style="width:170px"><col style="width:120px"><col style="width:86px">
-        <col class="col-src">
-      </colgroup>
-      <thead>
-        <tr>
-          <th data-k="id" class="no" style="width:52px">序号 <span class="arrow"></span></th>
-          <th data-k="企业名称">企业名称 <span class="arrow"></span></th>
-          <th data-k="所属类别">类别 <span class="arrow"></span></th>
-          <th data-k="所属地市">地市 <span class="arrow"></span></th>
-          <th data-k="板块">板块 <span class="arrow"></span></th>
-          <th data-k="层级">层级 <span class="arrow"></span></th>
-          <th data-k="集团归属">集团归属 <span class="arrow"></span></th>
-          <th data-k="行业">行业 <span class="arrow"></span></th>
-          <th data-k="查证状态">查证状态 <span class="arrow"></span></th>
-          <th data-k="来源说明" class="col-src">来源说明 <span class="arrow"></span></th>
-        </tr>
-      </thead>
-      <tbody id="tb"></tbody>
-    </table>
+  <div class="grid" id="list"></div>
     <div class="empty" id="empty" hidden>没有匹配的主体，换个关键词或清空筛选试试。</div>
-    <div class="more"><button class="btn" id="more" hidden>显示更多</button></div>
-  </div>
+  <div class="more"><button class="btn" id="more" hidden>显示更多</button></div>
 
   <footer>
     数据来源：公开渠道整理（企业官网、政府与国资委公开信息、工商登记检索）。层级与集团归属以最新工商登记为准；
@@ -216,7 +229,7 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
 (function(){
   "use strict";
   var DATA = JSON.parse(document.getElementById("data").textContent);
-  var PAGE = 80;
+  var PAGE = 60;
   var FP = "JSGQ-WEB-20261011-112B7774", DH = "112B777494AE1EFB";
 
   // 本次访问追踪码：时间片段 + 随机段。截图外流时可与站点访问记录按时间比对。
@@ -282,21 +295,25 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
     var rows = sortRows(DATA.filter(match));
     var q = state.q;
     var slice = rows.slice(0, state.shown);
-    var tb = $("tb");
-    tb.innerHTML = slice.map(function(r){
-      return "<tr>" +
-        "<td class='c' data-l='序号'>" + r.id + "</td>" +
-        "<td class='nm' data-l='企业'>" + hi(r["企业名称"], q) + "</td>" +
-        "<td class='nw' data-l='类别'><span class='tag " + (CAT_CLS[r["所属类别"]]||"") + "'>" +
-          esc(r["所属类别"]) + "</span></td>" +
-        "<td class='nw' data-l='地市'>" + esc(r["所属地市"]) + "</td>" +
-        "<td data-l='板块'>" + esc(r["板块"]) + "</td>" +
-        "<td class='nw' data-l='层级'>" + esc(r["层级"]) + "</td>" +
-        "<td data-l='集团'>" + hi(r["集团归属"], q) + "</td>" +
-        "<td data-l='行业'>" + hi(r["行业"], q) + "</td>" +
-        "<td class='nw' data-l='状态'>" + esc(r["查证状态"]) + "</td>" +
-        "<td class='src col-src' data-l='来源'>" + hi(r["来源说明"], q) + "</td>" +
-        "</tr>";
+    $("list").innerHTML = slice.map(function(r){
+      var catCls = CAT_CLS[r["所属类别"]] || "";
+      return "<article class='card'>" +
+        "<div class='chead'>" +
+          "<span class='idx'>" + r.id + "</span>" +
+          "<h2 class='name'>" + hi(r["企业名称"], q) + "</h2>" +
+          "<span class='tag " + catCls + "'>" + esc(r["所属类别"]) + "</span>" +
+        "</div>" +
+        "<p class='meta'>" + esc(r["所属地市"]) + " · " + esc(r["板块"]) +
+          " · " + esc(r["层级"]) + "</p>" +
+        "<div class='facts'>" +
+          "<div><dt>集团归属</dt><dd>" + hi(r["集团归属"], q) + "</dd></div>" +
+          "<div><dt>行业</dt><dd>" + hi(r["行业"], q) + "</dd></div>" +
+        "</div>" +
+        "<details><summary>数据来源与核验</summary>" +
+          "<div class='srcbox'><span class='st'>" + esc(r["查证状态"]) + "</span><br>" +
+          hi(r["来源说明"], q) + "</div>" +
+        "</details>" +
+      "</article>";
     }).join("");
 
     $("n").textContent = rows.length;
@@ -305,23 +322,23 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
     $("mix").textContent = "央企在苏 " + (c["央企在苏"]||0) +
       " · 省属国企 " + (c["省属国企"]||0) +
       " · 市属国企 " + (c["市属国企"]||0) +
-      " ｜ 覆盖 " + new Set(rows.map(function(r){return r["所属地市"];})).size +
-      " 个地市 · " + new Set(rows.map(function(r){return r["板块"];})).size + " 个板块";
+      " ｜ 覆盖 " + new Set(rows.map(function(r){ return r["所属地市"]; })).size +
+      " 个地市 · " + new Set(rows.map(function(r){ return r["板块"]; })).size + " 个板块";
+    $("hint").textContent = rows.length ? "点开卡片下方的「数据来源与核验」可看出处" : "";
     $("empty").hidden = rows.length > 0;
     $("more").hidden = rows.length <= state.shown;
     $("more").textContent = "显示更多（还有 " + (rows.length - state.shown) + " 家）";
-    document.querySelectorAll("thead th").forEach(function(th){
-      var a = th.querySelector(".arrow");
-      if(a){ a.textContent = (th.dataset.k === state.sortK) ? (state.sortD > 0 ? "▲" : "▼") : ""; }
-    });
+    $("sort").value = state.sortK;
     var h = "#" + [state.q ? "q=" + encodeURIComponent(state.q) : "",
                    state.cats.length ? "cat=" + state.cats.map(encodeURIComponent).join(",") : "",
                    state.sector ? "s=" + encodeURIComponent(state.sector) : "",
                    state.city ? "c=" + encodeURIComponent(state.city) : "",
-                   state.level ? "l=" + encodeURIComponent(state.level) : ""]
+                   state.level ? "l=" + encodeURIComponent(state.level) : "",
+                   state.sortK !== "id" ? "o=" + encodeURIComponent(state.sortK) : ""]
                   .filter(Boolean).join("&");
     if(history.replaceState){ history.replaceState(null,"", h === "#" ? location.pathname : h); }
   }
+
 
   function fillsel(el, vals, all){
     el.innerHTML = "<option value=''>" + all + "</option>" +
@@ -351,8 +368,8 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
   // build controls
   $("cats").innerHTML = CATS.map(function(c){
     var n = DATA.filter(function(r){ return r["所属类别"] === c; }).length;
-    return "<button type='button' class='chip' data-cat='" + esc(c) + "' aria-pressed='false'>" +
-           esc(c) + " " + n + "</button>";
+    return "<button type='button' class='seg' data-cat='" + esc(c) +
+           "' aria-pressed='false'>" + esc(c) + "<span class='n'>" + n + "</span></button>";
   }).join("");
   fillsel($("sector"), uniq("板块"), "全部板块");
   fillsel($("city"), uniq("所属地市"), "全部地市");
@@ -360,10 +377,10 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
 
   $("q").addEventListener("input", function(e){ state.q = e.target.value.trim(); state.shown = PAGE; render(); });
   $("cats").addEventListener("click", function(e){
-    var b = e.target.closest(".chip"); if(!b) return;
+    var b = e.target.closest(".seg"); if(!b) return;
     var c = b.dataset.cat, i = state.cats.indexOf(c);
     if(i < 0){ state.cats.push(c); } else { state.cats.splice(i,1); }
-    Array.prototype.forEach.call(this.querySelectorAll(".chip"), function(x){
+    Array.prototype.forEach.call(this.querySelectorAll(".seg"), function(x){
       x.setAttribute("aria-pressed", state.cats.indexOf(x.dataset.cat) >= 0 ? "true" : "false");
     });
     state.shown = PAGE; render();
@@ -371,14 +388,6 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
   [["sector","sector"],["city","city"],["level","level"]].forEach(function(p){
     $(p[0]).addEventListener("change", function(e){
       state[p[1]] = e.target.value; state.shown = PAGE; render();
-    });
-  });
-  document.querySelectorAll("thead th").forEach(function(th){
-    th.addEventListener("click", function(){
-      var k = th.dataset.k;
-      if(k === state.sortK){ state.sortD = -state.sortD; }
-      else { state.sortK = k; state.sortD = (k === "id") ? 1 : 1; }
-      render();
     });
   });
   $("more").addEventListener("click", function(){ state.shown += PAGE * 2; render(); });
@@ -390,35 +399,9 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
       navigator.clipboard.writeText(url).then(done, function(){ window.prompt("复制这个链接：", url); });
     } else { window.prompt("复制这个链接：", url); }
   });
-  $("showsrc").addEventListener("change", function(e){
-    $("t").classList.toggle("hidesrc", !e.target.checked);
-  });
-  $("t").classList.add("hidesrc");
   $("reset").addEventListener("click", function(){ apply({}); });
-  $("csv").addEventListener("click", function(){
-    var rows = sortRows(DATA.filter(match));
-    var head = ["序号","企业名称","所属类别","所属地市","板块","层级","集团归属","行业","查证状态","来源说明"];
-    var meta = [
-      ["数据来源", "圭煜 · 江苏央国企名录 · 检索版"],
-      ["版本指纹", FP],
-      ["数据校验码", DH],
-      ["导出时间", new Date().toLocaleString("zh-CN")],
-      ["追踪码", TRACE],
-      ["版权所有", "© 2026 圭煜，未经授权禁止转载 / 售卖 / 商用"]
-    ].map(function(kv){
-      return kv.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(",");
-    });
-    var lines = meta.concat([""], [head.join(",")], rows.map(function(r){
-      return [r.id,r["企业名称"],r["所属类别"],r["所属地市"],r["板块"],r["层级"],
-              r["集团归属"],r["行业"],r["查证状态"],r["来源说明"]]
-        .map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(",");
-    }));
-    var blob = new Blob(["\ufeff" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "江苏央国企名录_筛选结果.csv";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
+  $("sort").addEventListener("change", function(e){
+    state.sortK = e.target.value; state.sortD = 1; state.shown = PAGE; render();
   });
 
   // 复制正文时自动带回出处，不阻止复制本身
@@ -437,7 +420,7 @@ footer{max-width:1340px; margin:0 auto; padding:6px 16px 34px; color:var(--muted
     state.city = fromUrl.city || "";
     state.level = fromUrl.level || "";
     $("sector").value = state.sector; $("city").value = state.city; $("level").value = state.level;
-    Array.prototype.forEach.call(document.querySelectorAll("#cats .chip"), function(x){
+    Array.prototype.forEach.call(document.querySelectorAll("#cats .seg"), function(x){
       x.setAttribute("aria-pressed", state.cats.indexOf(x.dataset.cat) >= 0 ? "true" : "false");
     });
     state.shown = PAGE; render();
