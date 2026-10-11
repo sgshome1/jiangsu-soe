@@ -664,15 +664,21 @@ html[data-theme="noir"] .ratebadge{color:#7cc0ff}
 html[data-theme="noir"] .ratesec{color:#6fe09a}
 .acts{display:flex; flex-wrap:wrap; gap:8px; margin:13px 0 0; padding-top:12px;
   border-top:1px solid var(--sep)}
-.chip{background:var(--glass-2); border:1px solid var(--glass-line); border-radius:980px;
-  padding:7px 13px; font-size:13.5px; font-weight:500; color:var(--tint);
+.chip{display:inline-flex; align-items:center; gap:6px; background:var(--glass-2);
+  border:1px solid var(--glass-line); border-radius:980px;
+  padding:7px 13px 7px 11px; font-size:13.5px; font-weight:500; color:var(--tint);
   transition:background .2s, transform .2s cubic-bezier(.34,1.3,.64,1)}
+.chip svg{width:14px; height:14px; flex:0 0 auto; fill:none; stroke:currentColor;
+  stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; opacity:.9}
+.chip-n{min-width:17px; height:17px; padding:0 5px; margin-left:1px; border-radius:980px;
+  background:var(--tint); color:#fff; font-size:10.5px; font-weight:600;
+  display:inline-grid; place-items:center}
+.chip-n[hidden]{display:none}
 .chip:hover{background:var(--glass)}
 .chip:active{transform:scale(.965)}
 .chip.go{background:var(--glass-2); color:var(--tint); border-color:var(--glass-line)}
-.chip.msg{background:rgba(255,149,0,.18); color:#a35a00; border-color:rgba(255,149,0,.28)}
-.chip.msg:hover{background:rgba(255,149,0,.26)}
-html[data-theme="noir"] .chip.msg{color:#ffc266; border-color:rgba(255,159,10,.3)}
+.chip.say,.chip.msg{background:var(--glass-2); color:var(--tint); border-color:var(--glass-line)}
+.chip.say:hover,.chip.msg:hover{background:var(--glass)}
 .chip.on{background:linear-gradient(170deg,var(--tint),var(--tint-d)); color:#fff;
   border-color:transparent; box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
 details{margin:12px 0 0; padding-top:11px; border-top:1px solid var(--sep)}
@@ -738,6 +744,22 @@ html[data-theme="noir"] .pintag{color:#ffc266}
 .compose{margin-top:14px; padding:14px; border:1px solid var(--glass-line);
   border-radius:20px; background:var(--glass-2)}
 .compose input::placeholder,.compose textarea::placeholder{color:var(--label-2)}
+.fbchip{background:var(--glass-2); border:1px solid var(--glass-line); border-radius:980px;
+  color:var(--tint); font-size:13.5px; font-weight:500; padding:9px 16px;
+  box-shadow:inset 0 1px 0 var(--glass-hi);
+  -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%)}
+.fbchip:hover{background:var(--glass); box-shadow:inset 0 1px 0 var(--glass-hi);
+  transform:none}
+.fbchip svg{stroke-width:1.9}
+.fbform label{color:var(--label-2); font-size:13px}
+.fbform input,.fbform select,.fbform textarea{background:var(--glass-2);
+  border:1px solid var(--glass-line); border-radius:14px; color:var(--label); font-size:15px;
+  padding:11px 13px}
+.fbform input:focus,.fbform select:focus,.fbform textarea:focus{
+  border-color:transparent; box-shadow:0 0 0 3.5px rgba(0,122,255,.28)}
+.fbtip{color:var(--label-2); font-size:12.5px}
+.docbody{color:var(--label-2); font-size:14px}
+.docbody h4{color:var(--label)}
 .ctip{color:var(--label-2); font-size:12.5px}
 .back{color:var(--tint); font-size:14px}
 .cmpbar{background:var(--glass); border:1px solid var(--glass-line); border-radius:980px;
@@ -1042,7 +1064,7 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-B0007A2C", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-75837093", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1072,6 +1094,24 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   function baseCity(s){ return String(s || "").replace(/[（(].*$/, "").trim(); }
   var BYID = {};
   DATA.forEach(function(r){ BYID[r.id] = r; });
+
+  // 动作按钮图标（线性、1.9px，跟卡片里的其他图标同一套）
+  var ICO = {
+    link:'<svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/>' +
+      '<path d="M18 14.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10"/></svg>',
+    job:'<svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.6"/>' +
+      '<path d="M9 7.5V6a1.6 1.6 0 0 1 1.6-1.6h2.8A1.6 1.6 0 0 1 15 6v1.5"/>' +
+      '<path d="M3.5 12.5h17"/></svg>',
+    biz:'<svg viewBox="0 0 24 24"><path d="M4.5 20V6.5A1.5 1.5 0 0 1 6 5h7a1.5 1.5 0 0 1 1.5 1.5V20"/>' +
+      '<path d="M14.5 10.5H18a1.5 1.5 0 0 1 1.5 1.5v8"/><path d="M3.5 20h17"/>' +
+      '<path d="M7.5 8.5h4M7.5 12h4M7.5 15.5h4"/></svg>',
+    book:'<svg viewBox="0 0 24 24"><path d="M5 5.6A2.6 2.6 0 0 1 7.6 3H19v15.4H7.6A2.6 2.6 0 0 0 5 21z"/>' +
+      '<path d="M5 20.6V5.6"/></svg>',
+    chat:'<svg viewBox="0 0 24 24"><path d="M20 12a7.6 7.6 0 0 1-7.6 7.6H9.4L5 22v-4.3A7.6 7.6 0 0 1 12.4 4.4 7.6 7.6 0 0 1 20 12z"/></svg>',
+    cmp:'<svg viewBox="0 0 24 24"><path d="M4.5 19V10M10 19V5M15.5 19v-6"/>' +
+      '<path d="M3 19h18"/></svg>',
+    check:'<svg viewBox="0 0 24 24"><path d="M4.5 12.5l4.6 4.6L19.5 6.6"/></svg>'
+  };
 
   function esc(s){
     return String(s).replace(/[&<>"]/g, function(c){
@@ -1162,15 +1202,18 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
       (metrics ? "<div class='metrics'>" + metrics + "</div>" : "") +
       "<div class='acts'>" +
         (r["官网"] ? "<a class='chip go' href='" + esc(r["官网"]) +
-          "' target='_blank' rel='noopener'>" +
+          "' target='_blank' rel='noopener'>" + ICO.link +
           (r["官网来源"] === "group" ? "集团官网" : "官网") + "</a>" : "") +
         (r["招聘"] ? "<a class='chip go' href='" + esc(r["招聘"]) +
-          "' target='_blank' rel='noopener'>招聘</a>" : "") +
-        "<a class='chip go' href='" + qccUrl(nm) + "' target='_blank' rel='noopener'>工商信息</a>" +
-        "<a class='chip go' href='" + baikeUrl(nm) + "' target='_blank' rel='noopener'>百科</a>" +
-        "<button class='chip msg' data-msg=\"" + esc(nm) + "\">留言</button>" +
+          "' target='_blank' rel='noopener'>" + ICO.job + "招聘</a>" : "") +
+        "<a class='chip go' href='" + qccUrl(nm) + "' target='_blank' rel='noopener'>" +
+          ICO.biz + "工商信息</a>" +
+        "<a class='chip go' href='" + baikeUrl(nm) + "' target='_blank' rel='noopener'>" +
+          ICO.book + "百科</a>" +
+        "<button class='chip say' data-msg=\"" + esc(nm) + "\">" + ICO.chat + "留言" +
+          "<span class='chip-n' data-mcount=\"" + esc(nm) + "\" hidden></span></button>" +
         "<button class='chip" + (picked ? " on" : "") + " cmp' data-id='" + r.id + "'>" +
-          (picked ? "已加入对比" : "加入对比") + "</button>" +
+          (picked ? ICO.check + "已加入对比" : ICO.cmp + "加入对比") + "</button>" +
       "</div>" +
       "<details><summary>数据来源与核验</summary>" +
         "<div class='srcbox'>" +
@@ -1215,7 +1258,8 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     $("hFav").textContent = FAV.length;
     // 留言条数：页面打开就取一次，让首屏和吸顶栏的角标立刻有数
     fetch("board.json").then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0); } })
+      .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0);
+        paintMsgCounts(); } })
       .catch(function(){});
   }
 
@@ -1683,7 +1727,8 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     renderMsgs();
     fetch("board.json?t=" + Date.now())
       .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0); renderMsgs(); })
+      .then(function(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0);
+        paintMsgCounts(); renderMsgs(); })
       .catch(function(){
         $("msglist").innerHTML = "<div class='msg'><p>读不到帖子数据。你仍然可以直接发帖，" +
           "发完刷新页面就能看到。</p></div>";
@@ -1696,6 +1741,18 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     if(b) b.textContent = n || 0;
     if(c) c.textContent = n ? "（" + n + "）" : "";
     if(d) d.textContent = n || 0;
+  }
+
+  // 留言数：按企业统计，注入卡片上的「留言」按钮
+  function paintMsgCounts(){
+    var posts = (MSG_CACHE && MSG_CACHE.posts) || [];
+    var cnt = {};
+    posts.forEach(function(p){ var c = p.company || ""; cnt[c] = (cnt[c] || 0) + 1; });
+    var els = document.querySelectorAll("[data-mcount]");
+    for(var i = 0; i < els.length; i++){
+      var n = cnt[els[i].getAttribute("data-mcount")] || 0;
+      if(n > 0){ els[i].textContent = n; els[i].hidden = false; }
+    }
   }
   function openMsgs(company){
     MSG_FILTER = company || "";
