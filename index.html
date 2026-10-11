@@ -84,6 +84,8 @@ header,section,main{position:relative; z-index:1}
   border:1px solid rgba(0,113,227,.16); box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%;
   background:linear-gradient(140deg,#5cb0ff,#0071e3); box-shadow:0 0 0 3px rgba(0,113,227,.12)}
+.eyebrow .by{padding-left:9px; border-left:1px solid currentColor;
+  font-weight:500; letter-spacing:.04em; opacity:.6}
 .hero h1{margin:0; font-size:52px; line-height:1.06; font-weight:700;
   letter-spacing:-.028em;
   background:linear-gradient(180deg,#1d1d1f 30%, #4a4a52 100%);
@@ -424,11 +426,14 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   .row.in-sheet{display:flex}
   .controls{padding:10px 0 10px}
   .filterblock{padding:0}
-  #filters{position:fixed; left:0; right:0; bottom:0; z-index:9; background:#fff;
+  /* 筛选面板：盖在标签栏之上（z-index 高于 .tabbar 的 9），底部留出安全区；
+     打开期间标签栏整体让位（html.filter-open），底部按钮不再被压住 */
+  #filters{position:fixed; left:0; right:0; bottom:0; z-index:10; background:#fff;
     border-radius:22px 22px 0 0; padding:20px 20px 26px;
     box-shadow:0 -12px 50px rgba(0,0,0,.22);
     transform:translateY(115%); transition:transform .34s cubic-bezier(.2,.8,.2,1);
-    max-height:82vh; overflow:auto; padding:14px 20px 28px}
+    max-height:82vh; overflow:auto;
+    padding:14px 20px calc(28px + env(safe-area-inset-bottom))}
   #filters.open{transform:translateY(0)}
   #filters .stats2{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
   .row select{flex:1 1 46%; max-width:none}
@@ -1120,10 +1125,11 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   html.scrolled .topbar .wrap{padding:7px 14px}
   html.scrolled .brand-txt b{font-size:14px}
 
-  /* 4) 底部标签栏：跟顶部同步「上滑显现」，弹层打开时让位 */
+  /* 4) 底部标签栏：跟顶部同步「上滑显现」，弹层/筛选面板打开时让位 */
   .tabbar{transition:transform .42s cubic-bezier(.32,.72,0,1), opacity .3s ease}
-  html.chrome-hidden .tabbar{transform:translateY(190%); opacity:0; pointer-events:none}
-  html.modal-open .tabbar{transform:translateY(190%); opacity:0; pointer-events:none}
+  html.chrome-hidden .tabbar,
+  html.modal-open .tabbar,
+  html.filter-open .tabbar{transform:translateY(190%); opacity:0; pointer-events:none}
 
   /* 5) 弹层：盖在标签栏之上，关闭按钮常驻在弹层底部 */
   .modal{z-index:14}
@@ -1249,7 +1255,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
 
 <header class="hero">
   <div class="wrap">
-    <span class="eyebrow">江苏 · 国资</span>
+    <span class="eyebrow">江苏 · 国资<span class="by">圭煜制作</span></span>
     <h1>江苏央国企名录</h1>
     <p class="lede">一次查清 <b>832 家</b>央国企主体：按类别、行业、地市检索，
       直达<b>官网</b>与<b>官方招聘</b>，还能把任意几家企业拉出来横向对比。</p>
@@ -1658,7 +1664,8 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
           <li>2026-10-11：832 行「来源说明」全部改写为可回溯出处；上线企业评论区与互助吧；
             手机端改版（玻璃材质、深色模式、底部标签栏）；新增本说明页。</li>
           <li>2026-10-12：手机端精简——撤销顶部品牌条，首屏「投稿 / 互助吧」按钮收进底部标签栏；
-            修复对比条偏移与标签栏重叠；「互助留言墙」更名为「互助吧」。</li>
+            修复对比条偏移、空条残留与筛选面板按钮被遮挡；「互助留言墙」更名为「互助吧」；
+            首屏署名「圭煜制作」。</li>
         </ul>
         <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
       </section>
@@ -1763,7 +1770,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261012-ED011A69", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-CCE02C10", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2640,8 +2647,10 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
 
   // 手机端筛选面板
   function openFilters(){ $("filters").classList.add("open"); $("scrim").classList.add("show");
+    document.documentElement.classList.add("filter-open");
     $("filterbtn").setAttribute("aria-expanded", "true"); }
   function closeFilters(){ $("filters").classList.remove("open"); $("scrim").classList.remove("show");
+    document.documentElement.classList.remove("filter-open");
     $("filterbtn").setAttribute("aria-expanded", "false"); }
   $("filterbtn").addEventListener("click", function(){
     if($("filters").classList.contains("open")){ closeFilters(); } else { openFilters(); }
