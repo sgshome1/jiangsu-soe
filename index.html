@@ -342,7 +342,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .fbchip svg{width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.9;
   stroke-linecap:round; stroke-linejoin:round}
 
-/* ---------- 关注圭煜 ---------- */
+/* ---------- 进群交流（关注圭煜） ---------- */
 .sheet.narrow{width:min(560px,100%)}
 .followbox{display:grid; gap:12px; margin:2px 0 0}
 .followcard{display:flex; gap:14px; align-items:center; padding:14px;
@@ -1384,7 +1384,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         互助吧<span id="msgcount"></span></button>
       <button class="fbchip" id="foopen">
         <svg viewBox="0 0 24 24"><circle cx="10" cy="7.8" r="3.1"/><path d="M4.8 18.6c.3-3.1 2.6-5.1 5.2-5.1s4.9 2 5.2 5.1"/><path d="M18.2 6.6v6M15.2 9.6h6"/></svg>
-        关注圭煜</button>
+        进群交流</button>
     </div>
     <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
       版本指纹 <span class="fp" id="fp"></span></p>
@@ -1706,7 +1706,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
             手机端改版（玻璃材质、深色模式、底部标签栏）；新增本说明页。</li>
           <li>2026-10-12：手机端精简——撤销顶部品牌条，首屏「投稿 / 互助吧」按钮收进底部标签栏；
             修复对比条偏移、空条残留与筛选面板按钮被遮挡；「互助留言墙」更名为「互助吧」；
-            首屏署名「圭煜制作」；新增「关注圭煜」入口（微信公众号 / 小红书）。</li>
+            首屏署名「圭煜制作」；新增「进群交流」入口（微信公众号 / 小红书）。</li>
         </ul>
         <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
       </section>
@@ -1728,10 +1728,10 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
 </div>
 
 <div class="modal" id="folmodal" hidden>
-  <div class="sheet narrow" role="dialog" aria-modal="true" aria-label="关注圭煜">
+  <div class="sheet narrow" role="dialog" aria-modal="true" aria-label="进群交流">
     <button class="sheetback" id="folback" type="button" aria-label="返回">
       <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
-    <h3>关注圭煜</h3>
+    <h3>进群交流</h3>
     <p class="sm">微信公众号 · 小红书　唯一官方账号，谨防仿冒</p>
     <div class="followbox">
       <div class="followcard">
@@ -1841,7 +1841,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     <span>互助吧</span><b class="tab-n" id="tabWallN">0</b></button>
   <button type="button" data-tab="follow">
     <svg viewBox="0 0 24 24"><circle cx="10" cy="7.8" r="3.1"/><path d="M4.8 18.6c.3-3.1 2.6-5.1 5.2-5.1s4.9 2 5.2 5.1"/><path d="M18.2 6.6v6M15.2 9.6h6"/></svg>
-    <span>关注</span></button>
+    <span>进群</span></button>
   <button type="button" data-tab="post">
     <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>投稿</span></button>
   <button type="button" data-tab="about">
@@ -1866,7 +1866,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261012-ED54157E", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-70BD57D8", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2803,7 +2803,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     sheet.scrollTo({ top: Math.max(0, el.offsetTop - 18), behavior: reduce ? "auto" : "smooth" });
   });
   $("aboutopen").addEventListener("click", openAbout);
-  // 关注圭煜
+  // 进群交流（关注圭煜）
   function openFollow(){ $("folmodal").hidden = false; document.body.style.overflow = "hidden"; }
   function closeFollow(){ $("folmodal").hidden = true; document.body.style.overflow = ""; }
   $("foopen").addEventListener("click", openFollow);
