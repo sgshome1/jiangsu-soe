@@ -1059,6 +1059,8 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
 @media (max-width:900px){
   :root{--glass-card:rgba(255,255,255,.9)}
   html[data-theme="noir"]{--glass-card:rgba(34,34,38,.92)}
+  :root{--sheet-bg:#fffdfa}
+  html[data-theme="noir"]{--sheet-bg:#1c1c1e}
 
   /* 1) 少一层实时模糊：卡片改「高不透明玻璃」、不做 backdrop-filter；
         导航/搜索/标签栏的模糊半径也降下来 —— 手机 GPU 立省一大截 */
@@ -1095,6 +1097,37 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
     border-radius:13px; padding:0 14px; font-size:13.5px}
   html.scrolled .topbar .wrap{padding:7px 14px}
   html.scrolled .brand-txt b{font-size:14px}
+
+  /* 4) 底部标签栏：跟顶部同步「上滑显现」，弹层打开时让位 */
+  .tabbar{transition:transform .42s cubic-bezier(.32,.72,0,1), opacity .3s ease}
+  html.chrome-hidden .tabbar{transform:translateY(190%); opacity:0; pointer-events:none}
+  html.modal-open .tabbar{transform:translateY(190%); opacity:0; pointer-events:none}
+
+  /* 5) 弹层：盖在标签栏之上，关闭按钮常驻在弹层底部 */
+  .modal{z-index:14}
+  .modal .sheet{position:relative; padding-top:30px; background:var(--sheet-bg);
+    padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+  .modal .sheet::before{content:""; position:absolute; top:9px; left:50%;
+    transform:translateX(-50%); width:38px; height:5px; border-radius:980px;
+    background:var(--label-3); opacity:.75}
+  .modal .sheet .close{position:sticky; bottom:0; z-index:2; margin-top:16px;
+    padding:12px 0 6px; border-top:1px solid var(--sep);
+    background:var(--sheet-bg);
+    box-shadow:0 -14px 26px -16px rgba(0,0,0,.3)}
+  .modal .sheet .close{flex-wrap:wrap; gap:8px}
+  .modal .sheet .close .btn{flex:1 1 auto; white-space:nowrap; padding:11px 15px;
+    font-size:14px}
+  .modal .sheet .close #msgnew{flex:1 1 100%}
+  /* 弹层改成不透明后，输入框要给一点边界才看得出是输入框 */
+  .modal .compose input,.modal .compose select,.modal .compose textarea,
+  .modal .inlineReply textarea{background:rgba(120,120,128,.10);
+    border:1px solid var(--sep); border-radius:14px}
+  html[data-theme="noir"] .modal .compose input,
+  html[data-theme="noir"] .modal .compose select,
+  html[data-theme="noir"] .modal .compose textarea,
+  html[data-theme="noir"] .modal .inlineReply textarea{background:rgba(120,120,128,.18)}
+  .modal .compose{background:transparent; border:0; padding:0}
+  .msglist{max-height:46vh}
 }
 </style>
 </head>
@@ -1339,7 +1372,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-0760BCD2", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-90BE709F", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1708,6 +1741,15 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
       }
     });
   })();
+
+  // 弹层打开时，把底部标签栏让开（弹层关闭后按滚动状态自动回来）
+  function syncModalState(){
+    var any = false, ms = document.querySelectorAll(".modal");
+    for(var i = 0; i < ms.length; i++){ if(!ms[i].hidden){ any = true; break; } }
+    document.documentElement.classList.toggle("modal-open", any);
+  }
+  document.addEventListener("click", function(){ setTimeout(syncModalState, 0); });
+  syncModalState();
   (function zeroWidth(){
     var enc = "";
     TRACE.split("").forEach(function(ch){
