@@ -588,7 +588,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 
 <div class="modal" id="msgmodal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="互助留言墙">
-    <h3>互助留言墙</h3>
+    <h3 id="msgtitle">互助留言墙</h3>
     <p class="sm" id="msgsub">大家提交的纠错、补充与求职经验。</p>
     <div class="msglist" id="msglist"></div>
     <div class="compose">
@@ -626,7 +626,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-10258DB6", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-D8971073", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1063,14 +1063,15 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var API = "https://jsgq-soe-2026-d9gtw4r1y4ecbbfff-1504180676.ap-shanghai.app.tcloudbase.com/board";
 
   function postsOf(list){
-    var byId = {}; list.forEach(function(x){ byId[x.id] = x; });
-    var tops = list.filter(function(x){ return !x.replyTo || !byId[x.replyTo]; });
-    var kids = list.filter(function(x){ return x.replyTo && byId[x.replyTo]; });
+    // 站务贴是站外同步进来的，可能没有 id：先按有无 id 归位，别把「回复」错算到它们头上
+    var byId = {}; list.forEach(function(x){ if(x.id) byId[x.id] = x; });
+    var tops = list.filter(function(x){ return !(x.replyTo && byId[x.replyTo]); });
+    var kids = list.filter(function(x){ return !!(x.replyTo && byId[x.replyTo]); });
     return { tops: tops, kids: kids, byId: byId };
   }
 
   function postCard(x, list, isList){
-    var kids = list.filter(function(y){ return y.replyTo === x.id; });
+    var kids = x.id ? list.filter(function(y){ return (y.replyTo || "") === x.id; }) : [];
     var title = (x.content || "").replace(/\s+/g, " ").slice(0, 46);
     if(isList){
       return "<a class='thread' href='#' data-open='" + esc(x.id) + "'>" +
@@ -1120,12 +1121,18 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     }
     var g = postsOf(list);
     if(MSG_VIEW === "list"){
+      // 站务贴（pinned）固定在最上面，其余按时间倒序 —— 新帖排在最前面
+      var tops = g.tops.slice().sort(function(a, b){
+        var pa = a.pinned ? 0 : 1, pb = b.pinned ? 0 : 1;
+        if(pa !== pb) return pa - pb;
+        return String(b.time || "").localeCompare(String(a.time || ""));
+      });
       $("msgsub").textContent = (MSG_FILTER ? "「" + MSG_FILTER + "」吧" : "全部帖子") +
-        "　共 " + g.tops.length + " 个主题";
-      box.innerHTML = g.tops.length
-        ? "<div class='threadlist'>" + g.tops.map(function(x){
+        "　共 " + tops.length + " 个主题";
+      box.innerHTML = tops.length
+        ? "<div class='threadlist'>" + tops.map(function(x){
             return postCard(x, list, true); }).join("") + "</div>"
-        : "<div class='msg'><p>还没有主题。点下面「发表新帖」，第一楼就是你。</p></div>";
+        : "<div class='msg'><p>还没有主题。下面填个话题、写两句，第一楼就是你。</p></div>";
       return;
     }
     var cur = g.byId[MSG_OPEN];
@@ -1157,6 +1164,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     MSG_VIEW = "list"; MSG_OPEN = "";
     var co = $("cfcompany");
     if(co){ co.hidden = !!company; co.value = company || ""; }
+    $("msgtitle").textContent = company ? "企业留言" : "互助留言墙";
     $("cfbody").placeholder = company
       ? "写下你对「" + company + "」的了解：招聘流程、待遇、内部情况、纠错……有依据的信息最受欢迎。"
       : "想开一个新话题？先在左边填「企业名 / 话题」，再写正文。有依据的信息最受欢迎。";
