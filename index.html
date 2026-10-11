@@ -389,6 +389,24 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .msg .replt{color:var(--blue); text-decoration:none; cursor:pointer; margin-left:auto}
 .msg.kid{margin-left:22px; background:linear-gradient(180deg,#fafafc,#f4f4f8);
   border-left:2px solid rgba(0,113,227,.25)}
+/* 评论区：留言下面的回复（缩进一层） */
+.kids{margin-top:9px; padding-left:12px; border-left:2px solid rgba(0,0,0,.07);
+  display:grid; gap:9px}
+.kidline{font-size:13px; color:var(--ink-2); line-height:1.66}
+.kidline b{font-weight:600; color:var(--ink); margin-right:6px}
+.kidline i{font-style:normal; color:var(--blue); margin-right:6px}
+.kidline em{font-style:normal; color:var(--muted-2); font-size:11.5px; margin-left:6px}
+.kidline .replt,.sfline .replt{margin-left:8px; white-space:nowrap; font-size:12.5px}
+/* 贴吧：楼中楼 */
+.subfloor{margin-top:9px; padding:9px 11px; border-radius:11px; background:#f6f6fa;
+  display:grid; gap:9px}
+.sfline{font-size:13px; color:var(--ink-2); line-height:1.66}
+.sfline b{font-weight:600; color:var(--ink); margin-right:6px}
+.sfline i{font-style:normal; color:var(--blue); margin-right:6px}
+.sfline em{font-style:normal; color:var(--muted-2); font-size:11.5px; margin-left:6px}
+.msg .ttl{font-weight:600; color:var(--ink); margin:0 0 5px}
+.pintag{font-size:11px; font-weight:500; color:#a35a00; background:rgba(255,149,0,.15);
+  padding:1px 7px; border-radius:980px; vertical-align:1px; margin-right:6px}
 
 @media (max-width:900px){
   .grid{grid-template-columns:1fr}
@@ -626,7 +644,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-9F0DBA99", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-5F275719", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1070,39 +1088,126 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     return { tops: tops, kids: kids, byId: byId };
   }
 
-  function postCard(x, list, isList){
-    var kids = x.id ? list.filter(function(y){ return (y.replyTo || "") === x.id; }) : [];
-    var title = (x.content || "").replace(/\s+/g, " ").slice(0, 46);
-    if(isList){
-      return "<a class='thread' href='#' data-open='" + esc(x.id) + "'>" +
-        "<b>" + esc(title || "（无内容）") + "</b>" +
-        "<span class='tmeta'><i>" + esc(x.company || "") + "</i>" +
-        "<i>" + esc(x.nick || "匿名") + "</i>" +
-        "<i>" + kids.length + " 回复</i>" +
-        "<i>" + esc(kids.length ? kids[kids.length - 1].time : (x.time || "")) + "</i></span></a>";
+  function byIdOf(list){
+    var byId = {}; list.forEach(function(x){ if(x.id) byId[x.id] = x; });
+    return byId;
+  }
+  function byTime(a, b){ return String(a.time || "").localeCompare(String(b.time || "")); }
+  function firstLine(s){ return String(s || "").split("\n")[0].trim(); }
+  function restLines(s){ return String(s || "").split("\n").slice(1).join("\n").replace(/^\n+/, ""); }
+  function elide(s, n){
+    var t = String(s || "").trim();
+    if(t.length <= n) return t;
+    return t.slice(0, n).replace(/[，。、：；,.:;\s=]+$/, "") + "…";
+  }
+  function parentOf(x, byId){ return (x.replyTo && byId[x.replyTo]) ? byId[x.replyTo] : null; }
+  function rootOf(x, byId){
+    var cur = x, guard = 0;
+    while(guard++ < 30){
+      var up = parentOf(cur, byId);
+      if(!up) return cur;
+      cur = up;
     }
-    return "<div class='msg'><h5><span class='floor'>楼主 " + esc(x.nick || "匿名") + "</span>" +
-      esc(x.company || "") + "</h5><p>" + esc(x.content || "") + "</p><div class='mmeta'>" +
-      (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
-      "<span>" + esc(x.time || "") + "</span>" +
-      "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
-      "</div>" + kids.map(function(k, i){
-        return "<div class='msg kid'><h5><span class='floor'>#" + (i + 1) + "</span>" +
-          esc(k.nick || "匿名") + "</h5><p>" + esc(k.content || "") + "</p><div class='mmeta'>" +
-          "<span>" + esc(k.time || "") + "</span>" +
-          "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
-          "</div></div>";
-      }).join("") + "</div>";
+    return cur;
+  }
+  function replyLink(item, fallbackId){
+    return "<a href='#' class='replt' data-id='" + esc(item.id || fallbackId || "") +
+      "' data-co=\"" + esc(item.company || "") + "\">回复</a>";
   }
 
-  function flatCard(x){
-    return "<div class='msg'><h5>" + esc(x.company || "") +
-      (x.replyTo ? " <span class='floor'>回复</span>" : "") + "</h5><p>" +
-      esc(x.content || "") + "</p><div class='mmeta'>" +
+  // 评论区：一条留言一张卡，回复缩进挂在这条留言下面
+  function flatView(list){
+    var byId = byIdOf(list);
+    var roots = list.filter(function(x){ return !parentOf(x, byId); }).sort(byTime);
+    var subs = {};
+    list.forEach(function(x){
+      if(!parentOf(x, byId)) return;
+      var r = rootOf(x, byId);
+      if(r) (subs[r.id] = subs[r.id] || []).push(x);
+    });
+    return roots.map(function(x){
+      var kids = (subs[x.id] || []).slice().sort(byTime);
+      return "<div class='msg'><h5>" + esc(x.nick || "匿名") +
+        (x.source ? " <span class='tagmsg'>" + esc(x.source) + "</span>" : "") + "</h5>" +
+        "<p>" + esc(x.content || "") + "</p>" +
+        "<div class='mmeta'>" + "<span>" + esc(x.time || "") + "</span>" +
+        replyLink(x) + "</div>" +
+        (kids.length ? "<div class='kids'>" + kids.map(function(k){
+          var to = parentOf(k, byId);
+          return "<div class='kidline'><b>" + esc(k.nick || "匿名") + "</b>" +
+            (to && to !== x ? "<i>回复 " + esc(to.nick || "匿名") + "</i>" : "") +
+            "<span>" + esc(k.content || "") + "</span>" +
+            "<em>" + esc(k.time || "") + "</em>" + replyLink(k, x.id) + "</div>";
+        }).join("") + "</div>" : "") + "</div>";
+    }).join("");
+  }
+
+  // 贴吧：主题列表（置顶在前，其余新帖在前）
+  function threadList(list){
+    var byId = byIdOf(list);
+    var tops = list.filter(function(x){ return !parentOf(x, byId); }).sort(function(a, b){
+      var pa = a.pinned ? 0 : 1, pb = b.pinned ? 0 : 1;
+      if(pa !== pb) return pa - pb;
+      return String(b.time || "").localeCompare(String(a.time || ""));
+    });
+    var cnt = {}, last = {};
+    list.forEach(function(y){
+      var r = rootOf(y, byId);
+      if(!r || r === y || !r.id) return;
+      cnt[r.id] = (cnt[r.id] || 0) + 1;
+      if(!last[r.id] || String(y.time || "") > String(last[r.id])) last[r.id] = y.time;
+    });
+    var html = tops.map(function(x){
+      var n = cnt[x.id] || 0, t = firstLine(x.content) || "（无内容）";
+      return "<a class='thread' href='#' data-open='" + esc(x.id) + "'>" +
+        "<b>" + (x.pinned ? "<span class='pintag'>置顶</span>" : "") +
+        esc(elide(t, 44)) + "</b>" +
+        "<span class='tmeta'><i>" + esc(x.company || "") + "</i>" +
+        "<i>" + esc(x.nick || "匿名") + "</i>" +
+        "<i>" + n + " 回复</i>" +
+        "<i>" + esc(n && last[x.id] ? last[x.id] : (x.time || "")) + "</i></span></a>";
+    }).join("");
+    return { count: tops.length,
+             html: tops.length ? "<div class='threadlist'>" + html + "</div>" : "" };
+  }
+
+  // 贴吧：点进主题 → 楼主 / 楼层 / 楼中楼
+  function threadDetail(x, list){
+    var byId = byIdOf(list);
+    var floors = list.filter(function(y){ return parentOf(y, byId) === x; }).sort(byTime);
+    var subs = {};
+    list.forEach(function(y){
+      var p = parentOf(y, byId);
+      if(!p || p === x || rootOf(y, byId) !== x) return;
+      var anchor = p;                    // 顺着往上找到它挂在第几层
+      while(parentOf(anchor, byId) && parentOf(anchor, byId) !== x){
+        anchor = parentOf(anchor, byId);
+      }
+      if(parentOf(anchor, byId) === x) (subs[anchor.id] = subs[anchor.id] || []).push(y);
+    });
+    function sfLine(y, top){
+      var to = parentOf(y, byId);
+      return "<div class='sfline'><b>" + esc(y.nick || "匿名") + "</b>" +
+        (to && to !== top ? "<i>回复 " + esc(to.nick || "匿名") + "</i>" : "") +
+        "<span>" + esc(y.content || "") + "</span>" +
+        "<em>" + esc(y.time || "") + "</em>" + replyLink(y, top.id) + "</div>";
+    }
+    return "<div class='msg'><h5><span class='floor'>楼主</span>" + esc(x.nick || "匿名") + "</h5>" +
+      "<p class='ttl'>" + esc(firstLine(x.content) || "（无内容）") + "</p>" +
+      (restLines(x.content) ? "<p>" + esc(restLines(x.content)) + "</p>" : "") +
+      "<div class='mmeta'>" +
       (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
-      "<span>" + esc(x.nick || "匿名") + "</span><span>" + esc(x.time || "") + "</span>" +
-      "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") +
-      "'>回复</a></div></div>";
+      "<span>" + esc(x.time || "") + "</span>" + replyLink(x) + "</div></div>" +
+      floors.map(function(f, i){
+        var kd = (subs[f.id] || []).slice().sort(byTime);
+        return "<div class='msg kid'><h5><span class='floor'>" + (i + 2) + "楼</span>" +
+          esc(f.nick || "匿名") + "</h5><p>" + esc(f.content || "") + "</p>" +
+          "<div class='mmeta'><span>" + esc(f.time || "") + "</span>" +
+          replyLink(f, x.id) + "</div>" +
+          (kd.length ? "<div class='subfloor'>" +
+            kd.map(function(y){ return sfLine(y, f); }).join("") + "</div>" : "") +
+          "</div>";
+      }).join("");
   }
 
   function renderMsgs(){
@@ -1114,31 +1219,22 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     if(!MSG_CACHE){ box.innerHTML = "<div class='msg'><p>正在读取…</p></div>"; return; }
     if(MSG_MODE === "flat"){
       $("msgsub").textContent = "「" + MSG_FILTER + "」的评论区　共 " + list.length + " 条";
-      list.sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
-      box.innerHTML = list.length ? list.map(flatCard).join("")
+      box.innerHTML = list.length ? flatView(list)
         : "<div class='msg'><p>还没有留言。下面写第一条。</p></div>";
       return;
     }
-    var g = postsOf(list);
     if(MSG_VIEW === "list"){
-      // 站务贴（pinned）固定在最上面，其余按时间倒序 —— 新帖排在最前面
-      var tops = g.tops.slice().sort(function(a, b){
-        var pa = a.pinned ? 0 : 1, pb = b.pinned ? 0 : 1;
-        if(pa !== pb) return pa - pb;
-        return String(b.time || "").localeCompare(String(a.time || ""));
-      });
+      var tl = threadList(list);
       $("msgsub").textContent = (MSG_FILTER ? "「" + MSG_FILTER + "」吧" : "全部帖子") +
-        "　共 " + tops.length + " 个主题";
-      box.innerHTML = tops.length
-        ? "<div class='threadlist'>" + tops.map(function(x){
-            return postCard(x, list, true); }).join("") + "</div>"
-        : "<div class='msg'><p>还没有主题。下面填个话题、写两句，第一楼就是你。</p></div>";
+        "　共 " + tl.count + " 个主题";
+      box.innerHTML = tl.html ||
+        "<div class='msg'><p>还没有主题。下面填个话题、写两句，第一楼就是你。</p></div>";
       return;
     }
-    var cur = g.byId[MSG_OPEN];
+    var cur = byIdOf(list)[MSG_OPEN];
     if(!cur){ MSG_VIEW = "list"; return renderMsgs(); }
     $("msgsub").innerHTML = "<a href='#' id='backlist' class='back'>‹ 返回帖子列表</a>";
-    box.innerHTML = postCard(cur, list, false);
+    box.innerHTML = threadDetail(cur, list);
   }
 
   function loadMsgs(){
@@ -1167,7 +1263,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     $("msgtitle").textContent = company ? "企业留言" : "互助留言墙";
     $("cfbody").placeholder = company
       ? "写下你对「" + company + "」的了解：招聘流程、待遇、内部情况、纠错……有依据的信息最受欢迎。"
-      : "想开一个新话题？先在左边填「企业名 / 话题」，再写正文。有依据的信息最受欢迎。";
+      : "第一行当标题（会出现在主题列表），第二行起写正文。有依据的信息最受欢迎。";
     $("cfsend").textContent = company ? "留言" : "发帖";
     $("cftip").textContent = "";
     $("msgmodal").hidden = false; document.body.style.overflow = "hidden"; loadMsgs();
@@ -1205,13 +1301,13 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     var a = e.target.closest(".replt"); if(!a) return;
     e.preventDefault();
     var id = a.getAttribute("data-id"), co = a.getAttribute("data-co") || MSG_FILTER;
-    var host = a.closest(".msg");
+    var host = a.closest(".sfline") || a.closest(".kidline") || a.closest(".msg");
     var had = host.querySelector(".inlineReply");
     document.querySelectorAll(".inlineReply").forEach(function(x){ x.remove(); });
     if(had) return;
     var box = document.createElement("div");
     box.className = "inlineReply";
-    box.innerHTML = "<textarea placeholder='回复这一楼…'></textarea>" +
+    box.innerHTML = "<textarea placeholder='回复…有依据的信息最受欢迎'></textarea>" +
       "<div class='iract'><span class='ctip'></span>" +
       "<button class='btn primary'>回复</button></div>";
     host.appendChild(box);
