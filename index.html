@@ -616,6 +616,7 @@ select:hover{background-color:var(--glass-2)}
 
 /* ---------- 卡片：玻璃面板 ---------- */
 .grid{gap:16px}
+#list:empty{min-height:min(62vh,660px)}   /* 渲染前先占住高度，避免下方内容被顶一下 */
 @media (min-width:901px){ .grid{grid-template-columns:repeat(auto-fill,minmax(474px,1fr))} }
 .card{position:relative; border-radius:26px; padding:16px 16px 14px;
   background:var(--glass); border:1px solid var(--glass-line);
@@ -1732,7 +1733,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-F1A2D34D", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-2EB9208A", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2705,9 +2706,8 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   // 首屏先把英雄区的开场动效跑顺，列表等浏览器空闲了再渲染：
   // 832 条数据 + 60 张卡片是页面上最重的一次主线程工作，放在开场之后不会卡住动画
   (function(){
-    // 先把列表高度占住，卡片渲染完再交还，避免下方内容被顶一下（布局抖动）
+    // 列表高度由 CSS 预占（#list:empty），渲染完自动交还 —— 不产生布局跳动
     var list = $("list");
-    if(list) list.style.minHeight = Math.round(Math.min(window.innerHeight * 0.6, 640)) + "px";
     function soon(fn, ms){
       setTimeout(function(){
         if(window.requestIdleCallback) requestIdleCallback(fn, { timeout: 300 });
@@ -2723,7 +2723,6 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     soon(function(){
       state.shown = PAGE;
       render();
-      if(list) list.style.minHeight = "";
     }, 1750);
   })();
 })();
