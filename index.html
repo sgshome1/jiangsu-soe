@@ -915,21 +915,23 @@ html{scroll-behavior:smooth}
 
 /* ================= 修正层：手机搜索栏 + 概览重做 ================= */
 /* 概览：一个主数字带四个辅数字，读起来有主次 */
-.heroStats{grid-template-columns:1.65fr repeat(4,1fr)}
-.hs{padding:18px 18px 16px; display:flex; flex-direction:column; justify-content:center}
+.heroStats{grid-template-columns:1.85fr repeat(4,1fr)}
+.hs{padding:18px; display:flex; flex-direction:column; justify-content:center}
 .hs b{font-size:22px; font-weight:600; letter-spacing:-.03em; line-height:1.1}
-.hs span{margin-top:4px}
-.hs.lead{border-left:0; padding:20px 22px 18px}
+.hs span{margin-top:5px}
+.hs.lead{border-left:0; padding:20px 22px;
+  flex-direction:row; align-items:baseline; justify-content:flex-start; gap:13px}
 .hs.lead b{font-size:46px; font-weight:600; letter-spacing:-.045em; line-height:1;
   font-variant-numeric:tabular-nums}
-.hs.lead span{margin-top:9px; font-size:13px}
+.hs.lead span{margin-top:0; font-size:13.5px; letter-spacing:.01em}
 @media (max-width:900px){
   .heroStats{grid-template-columns:repeat(2,1fr)}
-  .hs.lead{grid-column:1 / -1; border-left:0; align-items:flex-start;
-    border-bottom:1px solid var(--sep); padding:18px 16px 16px}
-  .hs.lead b{font-size:50px}
-  .hs.lead span{margin-top:7px}
-  .hs{border-left:0; border-top:0; padding:15px 16px 14px}
+  .hs.lead{grid-column:1 / -1; border-left:0; border-bottom:1px solid var(--sep);
+    padding:19px 18px 17px; gap:11px}
+  .hs.lead b{font-size:52px}
+  .hs.lead span{font-size:13.5px}
+  .hs{border-left:0; border-top:0; padding:15px 18px 14px}
+  .hs b{font-size:20px}
   .hs:nth-child(3),.hs:nth-child(5){border-left:1px solid var(--sep)}
   .hs:nth-child(3),.hs:nth-child(4){border-top:1px solid var(--sep)}
   .hs:nth-child(5){grid-column:auto}
@@ -1273,7 +1275,8 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     卡片上的「官网 / 集团官网」只在该企业（或其上级集团）官网地址已核实时显示，直接跳转；核不到的
     不显示。「招聘」同理，只在该企业（或其上级集团）官网的招聘栏目地址核实后直连，一律不跳转
     第三方招聘站。「工商信息」跳转爱企查、「搜索」按企业全名发起百度网页检索。
-    <div class="docline"><button class="docbtn" id="docopen">查看完整统计口径与来源说明 ›</button></div>
+    <div class="docline"><button class="docbtn" id="docopen">查看完整统计口径与来源说明 ›</button>
+      <button class="docbtn" id="aboutopen" style="margin-left:14px">使用说明与声明 ›</button></div>
     <div class="fbrow">
       <button class="fbchip" id="fbopen">
         <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 3z"/></svg>我要投稿 / 纠错 / 补充企业</button>
@@ -1310,6 +1313,66 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     <h3>统计口径与来源说明</h3>
     <p class="sm" id="docsub"></p>
     <div id="docbody"></div>
+  </div>
+</div>
+
+<div class="modal" id="aboutmodal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="使用说明与声明">
+    <button class="sheetback" id="aboutback" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
+    <h3>使用说明与声明</h3>
+    <p class="sm">最后更新 2026-10-11　｜　版本指纹 <span class="fp" id="fp3"></span></p>
+    <div class="docbody aboutbody">
+      <h4>一、怎么用</h4>
+      <p>顶部搜索框支持企业名、集团名与行业关键词（如「能源」「地铁」「烟草」）；
+        再加上「类别 / 板块 / 地市 / 层级」四个筛选，可以快速缩到你要的那几家。</p>
+      <ul>
+        <li><b>官网 / 招聘</b>：只在该企业（或其上级集团）官网地址核实过时才出现，直达官网，
+          不跳第三方招聘站。核不到就不显示 —— 看不到链接，说明我们没核实到，不是漏了。</li>
+        <li><b>工商信息 / 百科</b>：跳转爱企查与百度百科，方便你自己复核股权与基本信息。</li>
+        <li><b>收藏</b>：点卡片右上角星标。收藏只存在你自己的浏览器里，不上传、不跨设备同步；
+          点顶部「收藏」可只看收藏。</li>
+        <li><b>对比</b>：点「加入对比」最多挑 4 家，底部会出现对比条，横向比较关键字段。</li>
+        <li><b>留言</b>：企业卡片上的「留言」是这家企业的评论区；「互助留言墙」是全部帖子的总览
+          （贴吧形态：主题列表 → 楼主 / 楼层 → 楼中楼回复）。</li>
+        <li><b>手机端</b>：底部五个标签分别是名录、留言墙、投稿、说明、外观（深浅色）。
+          向上滚顶部工具条会回来，向下滚会收起，把屏幕让给内容。</li>
+      </ul>
+      <h4>二、数据从哪来</h4>
+      <ul>
+        <li>全部条目来自公开渠道：各级国资委官网（省属企业、监管企业名录）、企业官网
+          （集团概况 / 成员企业 / 组织架构）、政府公开文件、招聘简章、债券评级报告，
+          以及工商登记平台（启信宝 / 天眼查 / 企查查 / 爱企查）的股权穿透。</li>
+        <li>收录口径：注册地在江苏省内的一级集团主体及其核心一、二级子公司；
+          不含项目部、空壳公司与纯办事处。</li>
+        <li>每条都带「来源说明」，能回溯到具体栏目或登记信息；核不到出处的不写。
+          金额、营收等数字过了一道校验闸，明显异常的值会被剔除。</li>
+        <li>标注「需再确认」的条目，表示公开渠道口径有冲突或不完整，引用前请自行复核。</li>
+      </ul>
+      <h4>三、免责声明</h4>
+      <ul>
+        <li>本名录是对公开信息的整理与汇编，仅供个人求职、研究与信息检索参考，
+          <b>不构成投资、就业、法律或任何专业建议</b>。</li>
+        <li>企业工商信息、股权关系、财务与评级数据随时可能变更，本页可能存在滞后或疏漏；
+          一切以工商登记、企业公告与主管部门的最新口径为准。</li>
+        <li>因使用或依赖本页信息而产生的任何直接或间接损失，本站及整理者不承担责任。</li>
+      </ul>
+      <h4>四、版权与防侵权</h4>
+      <ul>
+        <li>© 2026 圭煜。未经书面授权，禁止转载、摘编、批量爬取、售卖或用于商业用途；
+          禁止抹去页面中的水印、版本指纹与追踪码。</li>
+        <li>页脚有<b>版本指纹</b>（如 JSGQ-WEB-…）与<b>数据校验码</b>，可用来识别与比对版本；
+          每次访问还会生成一个<b>访问追踪码</b>，用于发现盗用与追溯来源。</li>
+        <li>企业名称、商标与标识归各自权利人所有，本页仅作客观指称与信息索引使用。</li>
+        <li>引用本名录数据，请注明来源「江苏央国企名录（圭煜）」并保留版本指纹。</li>
+      </ul>
+      <h4>五、纠错与侵权投诉</h4>
+      <ul>
+        <li>发现数据有误、想补充企业或提建议：走「投稿」，或直接在留言墙发帖；
+          每晚 23:30 自动汇总上墙。</li>
+        <li>侵权投诉：请通过投稿问卷提交，注明具体条目与权利证明，核实后会删除或更正。</li>
+      </ul>
+    </div>
   </div>
 </div>
 
@@ -1388,6 +1451,9 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     <span>留言墙</span><b class="tab-n" id="tabWallN">0</b></button>
   <button type="button" data-tab="post">
     <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>投稿</span></button>
+  <button type="button" data-tab="about">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle>
+      <path d="M12 11v6"/><path d="M12 7.6v.2"/></svg><span>说明</span></button>
   <button type="button" data-tab="theme">
     <svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"></path></svg>
     <span>外观</span></button>
@@ -1407,7 +1473,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-9BABD465", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-8713C9A5", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1770,6 +1836,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         var q = $("q"); if(q) setTimeout(function(){ q.focus(); }, 320); }
       else if(act === "wall"){ openMsgs(""); }
       else if(act === "post"){ window.open(FORM_URL, "_blank", "noopener"); }
+      else if(act === "about"){ openAbout(); }
       else if(act === "theme"){
         var cur = document.documentElement.getAttribute("data-theme");
         setTheme(cur === "noir" ? "ivory" : "noir");
@@ -2311,6 +2378,19 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   $("docback").addEventListener("click", function(){
     $("docmodal").hidden = true; document.body.style.overflow = "";
   });
+
+  // 使用说明与声明
+  function openAbout(){
+    var f = $("fp3"); if(f) f.textContent = FP;
+    $("aboutmodal").hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeAbout(){
+    $("aboutmodal").hidden = true; document.body.style.overflow = "";
+  }
+  $("aboutback").addEventListener("click", closeAbout);
+  $("aboutmodal").addEventListener("click", function(e){ if(e.target === this) closeAbout(); });
+  $("aboutopen").addEventListener("click", openAbout);
   $("docmodal").addEventListener("click", function(e){
     if(e.target === this){ this.hidden = true; document.body.style.overflow = ""; }
   });
