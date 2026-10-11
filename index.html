@@ -1070,6 +1070,10 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   :root{--sheet-bg:#fffdfa}
   html[data-theme="noir"]{--sheet-bg:#1c1c1e}
 
+  /* 手机上底部标签栏已有「外观」，顶部那颗浅色/深色就多余了，收起来 */
+  .themepick{display:none}
+  .topbar .wrap{justify-content:flex-start}
+
   /* 1) 少一层实时模糊：卡片改「高不透明玻璃」、不做 backdrop-filter；
         导航/搜索/标签栏的模糊半径也降下来 —— 手机 GPU 立省一大截 */
   .card{background:var(--glass-card);
@@ -1247,7 +1251,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     </div>
     <div class="heroCta">
       <button class="btn primary" id="postA">我要投稿 / 纠错 / 补充企业</button>
-      <button class="btn" id="wallA">互助留言墙<b class="cnt" id="wallA-n">0</b></button>
+      <button class="btn" id="wallA">互助吧<b class="cnt" id="wallA-n">0</b></button>
     </div>
   </div>
 </header>
@@ -1323,7 +1327,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 3z"/></svg>我要投稿 / 纠错 / 补充企业</button>
       <button class="fbchip" id="msgopen">
         <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.4-4.2A8 8 0 1 1 21 12z"/></svg>
-        互助留言墙<span id="msgcount"></span></button>
+        互助吧<span id="msgcount"></span></button>
     </div>
     <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
       版本指纹 <span class="fp" id="fp"></span></p>
@@ -1368,7 +1372,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         <p class="tochd">目录（点一下跳到对应章节）</p>
         <ol>
           <li><button type="button" data-jump="s1">一、怎么用</button>
-            <span>检索筛选 · 卡片按钮 · 收藏 · 对比 · 留言墙 · 手机端</span></li>
+            <span>检索筛选 · 卡片按钮 · 收藏 · 对比 · 互助吧 · 手机端</span></li>
           <li><button type="button" data-jump="s2">二、数据说明</button>
             <span>收录口径 · 字段含义 · 来源与核验 · 数字校验</span></li>
           <li><button type="button" data-jump="s3">三、免责声明</button>
@@ -1418,9 +1422,9 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
           <li>最多挑 4 家，底部出现对比条后点「开始对比」，横向比较关键字段。</li>
           <li>对比表覆盖：类别、地市、板块、层级、集团归属、行业、查证状态、来源说明、企业概况。</li>
         </ul>
-        <h5>1.5 留言墙（贴吧形态）</h5>
+        <h5>1.5 互助吧（贴吧形态）</h5>
         <ul>
-          <li>企业卡片上的「留言」是这家企业的评论区；「互助留言墙」是全部帖子的总览：
+          <li>企业卡片上的「留言」是这家企业的评论区；「互助吧」是全部帖子的总览：
             主题列表 → 点进去看楼主与楼层 → 每一层还能楼中楼回复。</li>
           <li>站务贴固定在主题列表最前（带「置顶」标），新帖按时间倒序排在其后。</li>
           <li>主题标题取正文第一行，所以发帖时第一行写得像标题会更整齐。</li>
@@ -1429,7 +1433,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         </ul>
         <h5>1.6 手机端</h5>
         <ul>
-          <li>底部五个标签：<b>名录</b>（回到顶部并聚焦搜索）、<b>留言墙</b>、<b>投稿</b>、
+          <li>底部五个标签：<b>名录</b>（回到顶部并聚焦搜索）、<b>互助吧</b>、<b>投稿</b>、
             <b>说明</b>（本页）、<b>外观</b>（浅色 / 深色）。</li>
           <li>向下滚动时顶部工具条与底部标签栏会收起，把整屏让给内容；向上一滚立刻回来。</li>
           <li>滚动后顶部搜索栏会收成一行（搜索框 + 筛选），不再占两行。</li>
@@ -1561,7 +1565,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         </ul>
         <h5>5.2 留言是公开的</h5>
         <ul>
-          <li>留言墙与评论区的所有内容<b>对所有人可见</b>，包括你填的昵称；
+          <li>互助吧与评论区的所有内容<b>对所有人可见</b>，包括你填的昵称；
             不想留名就留空，会显示「匿名」。</li>
           <li>请勿在留言里填写手机号、身份证号或内部未公开信息；
             这类内容我们有权直接删除。</li>
@@ -1579,13 +1583,13 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         <h4>六、纠错与投诉</h4>
         <h5>6.1 怎么提</h5>
         <ul>
-          <li>数据纠错 / 补充企业：走「投稿」问卷（可附来源链接），或直接在留言墙发帖。</li>
+          <li>数据纠错 / 补充企业：走「投稿」问卷（可附来源链接），或直接在互助吧发帖。</li>
           <li>求职经验 / 内部情况：建议写清「年份 + 批次 + 岗位大类 + 流程节点」，
             并注明信息来源，方便后来人对号入座。</li>
         </ul>
         <h5>6.2 处理时效与原则</h5>
         <ul>
-          <li>问卷内容每晚 23:30 自动汇总；留言墙内容是即时的。</li>
+          <li>问卷内容每晚 23:30 自动汇总；互助吧内容是即时的。</li>
           <li>有出处优先采纳；「听说 / 转述」会照原样标注来源，不当作事实陈述；
             无法核实又明显失实的会被删除。</li>
           <li>侵权投诉：通过投稿问卷提交，注明具体条目与权利证明，核实后删除或更正。</li>
@@ -1632,14 +1636,14 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         </ul>
         <h5>8.2 更新方式</h5>
         <ul>
-          <li>数据与页面同源：名录整体重新生成后发布；留言墙与投稿内容由每晚的计划任务自动并入。</li>
+          <li>数据与页面同源：名录整体重新生成后发布；互助吧与投稿内容由每晚的计划任务自动并入。</li>
           <li>页面是单文件（含全部数据），无外部依赖，离线打开也能看（留言功能除外）。</li>
         </ul>
         <h5>8.3 更新记录</h5>
         <ul>
           <li>2026-10-09：全量名录数据查证完成（832 家）。</li>
           <li>2026-10-10：增补 33 家央企在苏主体，形成 832 家完整版。</li>
-          <li>2026-10-11：832 行「来源说明」全部改写为可回溯出处；上线企业评论区与互助留言墙；
+          <li>2026-10-11：832 行「来源说明」全部改写为可回溯出处；上线企业评论区与互助吧；
             手机端改版（玻璃材质、深色模式、底部标签栏）；新增本说明页。</li>
         </ul>
         <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
@@ -1654,7 +1658,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
       <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3 id="fbtitle">投稿 · 纠错 · 补充</h3>
     <p class="sm">发现数据错了、有企业要补充、或想聊聊求职经验——都可以从这里发过来。
-      内容会公开在留言墙上，大家互相补充。</p>
+      内容会公开在互助吧上，大家互相补充。</p>
     <div class="fbform">
       <div>
         <label for="fbtype">类型</label>
@@ -1688,10 +1692,10 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
 </div>
 
 <div class="modal" id="msgmodal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-label="互助留言墙">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="互助吧">
     <button class="sheetback" id="msgback" type="button" aria-label="返回">
       <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
-    <h3 id="msgtitle">互助留言墙</h3>
+    <h3 id="msgtitle">互助吧</h3>
     <p class="sm" id="msgsub">大家提交的纠错、补充与求职经验。</p>
     <div class="msglist" id="msglist"></div>
     <div class="compose">
@@ -1720,7 +1724,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
       <line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg><span>名录</span></button>
   <button type="button" data-tab="wall">
     <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4 3v-5.6A8 8 0 0 1 13 4a8 8 0 0 1 8 8z"></path></svg>
-    <span>留言墙</span><b class="tab-n" id="tabWallN">0</b></button>
+    <span>互助吧</span><b class="tab-n" id="tabWallN">0</b></button>
   <button type="button" data-tab="post">
     <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>投稿</span></button>
   <button type="button" data-tab="about">
@@ -1745,7 +1749,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261012-A8026B71", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-FF9174FB", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2296,7 +2300,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var MSG_CACHE = null;
   var MSG_FILTER = "";
   var MSG_VIEW = "list";
-  var MSG_MODE = "forum";   // forum=贴吧形态（互助留言墙）  flat=简单评论区（企业留言）
+  var MSG_MODE = "forum";   // forum=贴吧形态（互助吧）  flat=简单评论区（企业留言）
   var MSG_OPEN = "";
   var API = "https://jsgq-soe-2026-d9gtw4r1y4ecbbfff-1504180676.ap-shanghai.app.tcloudbase.com/board";
 
@@ -2529,7 +2533,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     MSG_VIEW = "list"; MSG_OPEN = "";
     var co = $("cfcompany");
     if(co){ co.hidden = !!company; co.value = company || ""; }
-    $("msgtitle").textContent = company ? "企业留言" : "互助留言墙";
+    $("msgtitle").textContent = company ? "企业留言" : "互助吧";
     $("cfbody").placeholder = company
       ? "写下你对「" + company + "」的了解：招聘流程、待遇、内部情况、纠错……有依据的信息最受欢迎。"
       : "第一行当标题（会出现在主题列表），第二行起写正文。有依据的信息最受欢迎。";
