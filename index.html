@@ -354,6 +354,16 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .msg .tagmsg{font-size:11px; padding:2px 8px; border-radius:980px;
   background:rgba(0,113,227,.10); color:#0060c0}
 @media (max-width:560px){ .fbacts .btn{flex:1 1 auto} }
+.threadlist{display:grid; gap:8px}
+.thread{display:flex; flex-direction:column; gap:5px; padding:12px 14px; border-radius:14px;
+  background:linear-gradient(180deg,#fbfbfd,#f6f6f9); border:1px solid rgba(0,0,0,.06);
+  text-decoration:none; color:inherit; transition:transform .16s, box-shadow .16s}
+.thread:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.07)}
+.thread b{font-size:14.5px; font-weight:600; letter-spacing:-.01em}
+.thread .tmeta{display:flex; gap:12px; font-size:12px; color:var(--muted-2)}
+.thread .tmeta i{font-style:normal}
+.back{color:var(--blue); text-decoration:none; font-size:13px}
+
 .inlineReply{margin:10px 0 0; padding:10px 12px; border-radius:12px; background:#fff;
   border:1px solid rgba(0,113,227,.25)}
 .inlineReply textarea{width:100%; min-height:62px; font-family:inherit; font-size:13.5px;
@@ -583,6 +593,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     <div class="msglist" id="msglist"></div>
     <div class="compose">
       <div class="crow">
+        <input id="cfcompany" type="text" maxlength="40" placeholder="哪家企业 / 什么话题（必填）">
         <input id="cfnick" type="text" maxlength="16" placeholder="昵称（可不填）">
         <select id="cfsrc">
           <option value="">信息来源（选填）</option>
@@ -591,14 +602,15 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
           <option value="听说/转述">听说 / 转述</option>
         </select>
       </div>
-      <textarea id="cfbody" maxlength="1200" placeholder="写点什么……有依据的信息最受欢迎。楼主发帖时，可在下面直接回复别人。"></textarea>
+      <textarea id="cfbody" maxlength="1200" placeholder="写点什么……有依据的信息最受欢迎。"></textarea>
       <div class="cact">
         <span class="ctip" id="cftip"></span>
         <button class="btn primary" id="cfsend">发帖</button>
       </div>
     </div>
     <div class="close">
-      <button class="btn primary" id="msgnew">我也说一句</button>
+      <button class="btn primary" id="msgnew">写一条，直接上屏</button>
+      <button class="btn" id="msgform">用问卷投稿（每晚同步）</button>
       <button class="btn" id="msgclose">关闭</button>
     </div>
   </div>
@@ -614,7 +626,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-3A4D30B6", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-10258DB6", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1045,6 +1057,52 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 
   var MSG_CACHE = null;
   var MSG_FILTER = "";
+  var MSG_VIEW = "list";
+  var MSG_MODE = "forum";   // forum=贴吧形态（互助留言墙）  flat=简单评论区（企业留言）
+  var MSG_OPEN = "";
+  var API = "https://jsgq-soe-2026-d9gtw4r1y4ecbbfff-1504180676.ap-shanghai.app.tcloudbase.com/board";
+
+  function postsOf(list){
+    var byId = {}; list.forEach(function(x){ byId[x.id] = x; });
+    var tops = list.filter(function(x){ return !x.replyTo || !byId[x.replyTo]; });
+    var kids = list.filter(function(x){ return x.replyTo && byId[x.replyTo]; });
+    return { tops: tops, kids: kids, byId: byId };
+  }
+
+  function postCard(x, list, isList){
+    var kids = list.filter(function(y){ return y.replyTo === x.id; });
+    var title = (x.content || "").replace(/\s+/g, " ").slice(0, 46);
+    if(isList){
+      return "<a class='thread' href='#' data-open='" + esc(x.id) + "'>" +
+        "<b>" + esc(title || "（无内容）") + "</b>" +
+        "<span class='tmeta'><i>" + esc(x.company || "") + "</i>" +
+        "<i>" + esc(x.nick || "匿名") + "</i>" +
+        "<i>" + kids.length + " 回复</i>" +
+        "<i>" + esc(kids.length ? kids[kids.length - 1].time : (x.time || "")) + "</i></span></a>";
+    }
+    return "<div class='msg'><h5><span class='floor'>楼主 " + esc(x.nick || "匿名") + "</span>" +
+      esc(x.company || "") + "</h5><p>" + esc(x.content || "") + "</p><div class='mmeta'>" +
+      (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
+      "<span>" + esc(x.time || "") + "</span>" +
+      "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
+      "</div>" + kids.map(function(k, i){
+        return "<div class='msg kid'><h5><span class='floor'>#" + (i + 1) + "</span>" +
+          esc(k.nick || "匿名") + "</h5><p>" + esc(k.content || "") + "</p><div class='mmeta'>" +
+          "<span>" + esc(k.time || "") + "</span>" +
+          "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
+          "</div></div>";
+      }).join("") + "</div>";
+  }
+
+  function flatCard(x){
+    return "<div class='msg'><h5>" + esc(x.company || "") +
+      (x.replyTo ? " <span class='floor'>回复</span>" : "") + "</h5><p>" +
+      esc(x.content || "") + "</p><div class='mmeta'>" +
+      (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
+      "<span>" + esc(x.nick || "匿名") + "</span><span>" + esc(x.time || "") + "</span>" +
+      "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") +
+      "'>回复</a></div></div>";
+  }
 
   function renderMsgs(){
     var box = $("msglist");
@@ -1052,54 +1110,41 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     var list = MSG_FILTER
       ? all.filter(function(x){ return (x.company || "").indexOf(MSG_FILTER) >= 0; })
       : all;
-    $("msgsub").textContent = MSG_FILTER
-      ? "「" + MSG_FILTER + "」的留言：" + list.length + " 条"
-      : "大家提交的纠错、补充与求职经验，共 " + list.length + " 楼";
-    if(!MSG_CACHE){
-      box.innerHTML = "<div class='msg'><p>正在读取留言…</p></div>";
+    if(!MSG_CACHE){ box.innerHTML = "<div class='msg'><p>正在读取…</p></div>"; return; }
+    if(MSG_MODE === "flat"){
+      $("msgsub").textContent = "「" + MSG_FILTER + "」的评论区　共 " + list.length + " 条";
+      list.sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
+      box.innerHTML = list.length ? list.map(flatCard).join("")
+        : "<div class='msg'><p>还没有留言。下面写第一条。</p></div>";
       return;
     }
-    if(!list.length){
-      box.innerHTML = "<div class='msg'><p>" + (MSG_FILTER
-        ? "这家企业还没有留言。你的第一条会被很多人看到。"
-        : "还没有留言。下面「我也说一句」，第一条就是你。") + "</p></div>";
+    var g = postsOf(list);
+    if(MSG_VIEW === "list"){
+      $("msgsub").textContent = (MSG_FILTER ? "「" + MSG_FILTER + "」吧" : "全部帖子") +
+        "　共 " + g.tops.length + " 个主题";
+      box.innerHTML = g.tops.length
+        ? "<div class='threadlist'>" + g.tops.map(function(x){
+            return postCard(x, list, true); }).join("") + "</div>"
+        : "<div class='msg'><p>还没有主题。点下面「发表新帖」，第一楼就是你。</p></div>";
       return;
     }
-    var byId = {}; list.forEach(function(x){ byId[x.id] = x; });
-    function floors(x){
-      var kids = list.filter(function(y){ return y.replyTo && y.replyTo === x.id; });
-      return kids.map(function(k){
-        return "<div class='msg kid'><h5>回复 " + esc(x.company || "") + "</h5><p>" +
-          esc(k.content || "") + "</p><div class='mmeta'>" +
-          (k.source ? "<span class='tagmsg'>" + esc(k.source) + "</span>" : "") +
-          "<span>" + esc(k.nick || "匿名") + "</span><span>" + esc(k.time || "") + "</span>" +
-          "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
-          "</div></div>";
-      }).join("");
-    }
-    var tops = list.filter(function(x){ return !x.replyTo || !byId[x.replyTo]; });
-    box.innerHTML = tops.map(function(x, i){
-      return "<div class='msg'><h5><span class='floor'>#" + (i + 1) + "</span>" +
-        esc(x.company || "未指定企业") + (x.type ? " · " + esc(x.type) : "") +
-        "</h5><p>" + esc(x.content || "") + "</p><div class='mmeta'>" +
-        (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
-        "<span>" + esc(x.nick || "匿名") + "</span><span>" + esc(x.time || "") + "</span>" +
-        "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
-        "</div>" + floors(x) + "</div>";
-    }).join("");
+    var cur = g.byId[MSG_OPEN];
+    if(!cur){ MSG_VIEW = "list"; return renderMsgs(); }
+    $("msgsub").innerHTML = "<a href='#' id='backlist' class='back'>‹ 返回帖子列表</a>";
+    box.innerHTML = postCard(cur, list, false);
   }
 
   function loadMsgs(){
-    if(MSG_CACHE){ renderMsgs(); return; }
     renderMsgs();
     fetch("board.json?t=" + Date.now())
       .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0); renderMsgs(); })
       .catch(function(){
-        $("msglist").innerHTML = "<div class='msg'><p>留言还没同步过来（数据每晚更新一次）。" +
-          "点下面「我也说一句」，你的留言下一次同步就会出现在这里。</p></div>";
+        $("msglist").innerHTML = "<div class='msg'><p>读不到帖子数据。你仍然可以直接发帖，" +
+          "发完刷新页面就能看到。</p></div>";
       });
   }
+
   function setWallCount(n){
     var a = $("wallA-n"), b = $("wallB-n"), c = $("msgcount");
     if(a) a.textContent = n || 0;
@@ -1108,6 +1153,15 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   }
   function openMsgs(company){
     MSG_FILTER = company || "";
+    MSG_MODE = company ? "flat" : "forum";
+    MSG_VIEW = "list"; MSG_OPEN = "";
+    var co = $("cfcompany");
+    if(co){ co.hidden = !!company; co.value = company || ""; }
+    $("cfbody").placeholder = company
+      ? "写下你对「" + company + "」的了解：招聘流程、待遇、内部情况、纠错……有依据的信息最受欢迎。"
+      : "想开一个新话题？先在左边填「企业名 / 话题」，再写正文。有依据的信息最受欢迎。";
+    $("cfsend").textContent = company ? "留言" : "发帖";
+    $("cftip").textContent = "";
     $("msgmodal").hidden = false; document.body.style.overflow = "hidden"; loadMsgs();
   }
   function closeMsgs(){ $("msgmodal").hidden = true; document.body.style.overflow = ""; }
@@ -1119,11 +1173,27 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   $("postB").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener"); });
   $("msgclose").addEventListener("click", closeMsgs);
-  $("msgmodal").addEventListener("click", function(e){ if(e.target === this) closeMsgs(); });
+  $("msgmodal").addEventListener("click", function(e){
+    if(e.target === this){ closeMsgs(); return; }
+    // 「返回帖子列表」在 #msgsub 里，不在 #msglist 内，所以要在弹层这一层兜住
+    if(e.target.closest("#backlist")){
+      e.preventDefault(); MSG_VIEW = "list"; MSG_OPEN = ""; renderMsgs();
+    }
+  });
   $("msgnew").addEventListener("click", function(){
+    var box = document.querySelector("#msgmodal .compose");
+    if(box && box.scrollIntoView){ box.scrollIntoView({ block:"center", behavior:"smooth" }); }
+    var co = $("cfcompany");
+    if(co && !MSG_FILTER){ co.focus(); } else { $("cfbody").focus(); }
+  });
+  $("msgform").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener");
   });
   $("msglist").addEventListener("click", function(e){
+    if(e.target.closest("#backlist")){ e.preventDefault(); MSG_VIEW = "list"; MSG_OPEN = ""; renderMsgs(); return; }
+    var th = e.target.closest("[data-open]");
+    if(th){ e.preventDefault(); MSG_VIEW = "post"; MSG_OPEN = th.getAttribute("data-open");
+      renderMsgs(); return; }
     var a = e.target.closest(".replt"); if(!a) return;
     e.preventDefault();
     var id = a.getAttribute("data-id"), co = a.getAttribute("data-co") || MSG_FILTER;
@@ -1147,28 +1217,40 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
       }).then(function(r){ return r.json(); }).then(function(d){
         btn.disabled = false;
         if(!d || !d.ok){ box.querySelector(".ctip").textContent = "没发出去：" + ((d && d.err) || ""); return; }
-        box.querySelector(".ctip").textContent = "已盖楼 ✓";
-        setTimeout(function(){ MSG_CACHE = null; loadMsgs(); }, 2500);
+        box.querySelector(".ctip").textContent = "已回复 ✓";
+        if(MSG_CACHE && MSG_CACHE.posts){ MSG_CACHE.posts.push(d.post || {
+          id: d.id, company: co, content: txt, nick: "", source: "", replyTo: id,
+          time: new Date().toISOString().slice(0,16).replace("T"," ") }); }
+        renderMsgs();
       }).catch(function(){ btn.disabled = false; box.querySelector(".ctip").textContent = "网络出错"; });
     });
   });
   $("cfsend").addEventListener("click", function(){
     var btn = this, body = ($("cfbody").value || "").trim();
     if(!body || body.length < 2){ $("cftip").textContent = "内容太短"; return; }
-    var company = MSG_FILTER || ($("cfcompany") ? $("cfcompany").value.trim() : "");
-    if(!company){ $("cftip").textContent = "请先说明是哪家企业（从企业卡片的「留言」进来会自动带上）"; return; }
+    var coEl = $("cfcompany");
+    var company = MSG_FILTER || (coEl ? coEl.value.trim() : "");
+    if(!company){
+      $("cftip").textContent = "先写清是哪家企业 / 什么话题（从企业卡片的「留言」进来会自动带上）";
+      if(coEl) coEl.focus();
+      return;
+    }
     btn.disabled = true; $("cftip").textContent = "发送中…";
     fetch(API + "/post", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ company: company, content: body,
-        nick: ($("cfnick").value || "").trim(), source: $("cfsrc").value,
-        replyTo: REPLY_TO })
+        nick: ($("cfnick").value || "").trim(), source: $("cfsrc").value })
     }).then(function(r){ return r.json(); }).then(function(d){
       btn.disabled = false;
       if(!d || !d.ok){ $("cftip").textContent = "没发出去：" + ((d && d.err) || "未知原因"); return; }
-      $("cfbody").value = ""; REPLY_TO = "";
-      $("cftip").textContent = "已发布 ✓ 3 秒后刷新列表";
-      setTimeout(function(){ MSG_CACHE = null; loadMsgs(); $("cftip").textContent = ""; }, 3000);
+      $("cfbody").value = "";
+      if(MSG_CACHE && MSG_CACHE.posts){ MSG_CACHE.posts.push(d.post || {
+        id: d.id, company: company, content: body, nick: ($("cfnick").value||"").trim(),
+        source: $("cfsrc").value, replyTo: "", time: new Date().toISOString().slice(0,16).replace("T"," ") }); }
+      if(MSG_MODE === "forum" && coEl){ coEl.value = ""; }
+      $("cftip").textContent = "已发布 ✓";
+      renderMsgs();
+      setTimeout(function(){ $("cftip").textContent = ""; }, 2500);
     }).catch(function(){
       btn.disabled = false; $("cftip").textContent = "网络出错，稍后再试";
     });
