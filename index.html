@@ -1166,6 +1166,34 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   .sheetback{left:14px; top:22px; width:38px; height:38px}
   .sheet > h3:first-of-type{padding-left:50px}
 }
+
+/* ================= 说明页：目录 + 分节 ================= */
+.toc{margin:4px 0 18px; padding:14px 16px; border-radius:16px;
+  background:var(--glass-2); border:1px solid var(--glass-line)}
+.toc .tochd{margin:0 0 8px; font-size:12.5px; color:var(--muted-2); letter-spacing:.02em}
+.toc ol{margin:0; padding:0; list-style:none; display:grid; gap:0}
+.toc li{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px; padding:9px 0;
+  border-top:1px solid var(--sep)}
+.toc li:first-child{border-top:0}
+.toc button{border:0; background:none; padding:0; font:inherit; font-size:14.5px;
+  font-weight:560; color:var(--tint); cursor:pointer; text-align:left; line-height:1.4}
+.toc button:hover{text-decoration:underline}
+.toc li span{font-size:12px; color:var(--muted-2); line-height:1.5}
+.docsec{scroll-margin-top:14px}
+.docsec + .docsec{margin-top:24px; padding-top:20px; border-top:1px solid var(--sep)}
+.aboutbody h5{margin:16px 0 6px; font-size:14px; font-weight:600; letter-spacing:-.01em}
+.aboutbody h5:first-of-type{margin-top:10px}
+.aboutbody ul{margin:0; padding-left:20px}
+.aboutbody li{margin:5px 0; line-height:1.78}
+.tocback{margin:12px 0 2px; border:0; background:none; padding:0; font:inherit;
+  font-size:12.5px; color:var(--muted-2); cursor:pointer}
+.tocback:hover{color:var(--tint)}
+@media (max-width:900px){
+  .toc{padding:12px 14px; border-radius:14px}
+  .toc li{display:block}
+  .toc li span{display:block; margin-top:3px}
+  .aboutbody li{line-height:1.8}
+}
 </style>
 </head>
 <body>
@@ -1323,55 +1351,286 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     <h3>使用说明与声明</h3>
     <p class="sm">最后更新 2026-10-11　｜　版本指纹 <span class="fp" id="fp3"></span></p>
     <div class="docbody aboutbody">
-      <h4>一、怎么用</h4>
-      <p>顶部搜索框支持企业名、集团名与行业关键词（如「能源」「地铁」「烟草」）；
-        再加上「类别 / 板块 / 地市 / 层级」四个筛选，可以快速缩到你要的那几家。</p>
-      <ul>
-        <li><b>官网 / 招聘</b>：只在该企业（或其上级集团）官网地址核实过时才出现，直达官网，
-          不跳第三方招聘站。核不到就不显示 —— 看不到链接，说明我们没核实到，不是漏了。</li>
-        <li><b>工商信息 / 百科</b>：跳转爱企查与百度百科，方便你自己复核股权与基本信息。</li>
-        <li><b>收藏</b>：点卡片右上角星标。收藏只存在你自己的浏览器里，不上传、不跨设备同步；
-          点顶部「收藏」可只看收藏。</li>
-        <li><b>对比</b>：点「加入对比」最多挑 4 家，底部会出现对比条，横向比较关键字段。</li>
-        <li><b>留言</b>：企业卡片上的「留言」是这家企业的评论区；「互助留言墙」是全部帖子的总览
-          （贴吧形态：主题列表 → 楼主 / 楼层 → 楼中楼回复）。</li>
-        <li><b>手机端</b>：底部五个标签分别是名录、留言墙、投稿、说明、外观（深浅色）。
-          向上滚顶部工具条会回来，向下滚会收起，把屏幕让给内容。</li>
-      </ul>
-      <h4>二、数据从哪来</h4>
-      <ul>
-        <li>全部条目来自公开渠道：各级国资委官网（省属企业、监管企业名录）、企业官网
-          （集团概况 / 成员企业 / 组织架构）、政府公开文件、招聘简章、债券评级报告，
-          以及工商登记平台（启信宝 / 天眼查 / 企查查 / 爱企查）的股权穿透。</li>
-        <li>收录口径：注册地在江苏省内的一级集团主体及其核心一、二级子公司；
-          不含项目部、空壳公司与纯办事处。</li>
-        <li>每条都带「来源说明」，能回溯到具体栏目或登记信息；核不到出处的不写。
-          金额、营收等数字过了一道校验闸，明显异常的值会被剔除。</li>
-        <li>标注「需再确认」的条目，表示公开渠道口径有冲突或不完整，引用前请自行复核。</li>
-      </ul>
-      <h4>三、免责声明</h4>
-      <ul>
-        <li>本名录是对公开信息的整理与汇编，仅供个人求职、研究与信息检索参考，
-          <b>不构成投资、就业、法律或任何专业建议</b>。</li>
-        <li>企业工商信息、股权关系、财务与评级数据随时可能变更，本页可能存在滞后或疏漏；
-          一切以工商登记、企业公告与主管部门的最新口径为准。</li>
-        <li>因使用或依赖本页信息而产生的任何直接或间接损失，本站及整理者不承担责任。</li>
-      </ul>
-      <h4>四、版权与防侵权</h4>
-      <ul>
-        <li>© 2026 圭煜。未经书面授权，禁止转载、摘编、批量爬取、售卖或用于商业用途；
-          禁止抹去页面中的水印、版本指纹与追踪码。</li>
-        <li>页脚有<b>版本指纹</b>（如 JSGQ-WEB-…）与<b>数据校验码</b>，可用来识别与比对版本；
-          每次访问还会生成一个<b>访问追踪码</b>，用于发现盗用与追溯来源。</li>
-        <li>企业名称、商标与标识归各自权利人所有，本页仅作客观指称与信息索引使用。</li>
-        <li>引用本名录数据，请注明来源「江苏央国企名录（圭煜）」并保留版本指纹。</li>
-      </ul>
-      <h4>五、纠错与侵权投诉</h4>
-      <ul>
-        <li>发现数据有误、想补充企业或提建议：走「投稿」，或直接在留言墙发帖；
-          每晚 23:30 自动汇总上墙。</li>
-        <li>侵权投诉：请通过投稿问卷提交，注明具体条目与权利证明，核实后会删除或更正。</li>
-      </ul>
+      <nav class="toc" id="toc" aria-label="目录">
+        <p class="tochd">目录（点一下跳到对应章节）</p>
+        <ol>
+          <li><button type="button" data-jump="s1">一、怎么用</button>
+            <span>检索筛选 · 卡片按钮 · 收藏 · 对比 · 留言墙 · 手机端</span></li>
+          <li><button type="button" data-jump="s2">二、数据说明</button>
+            <span>收录口径 · 字段含义 · 来源与核验 · 数字校验</span></li>
+          <li><button type="button" data-jump="s3">三、免责声明</button>
+            <span>信息性质 · 时效性 · 第三方链接 · 责任限制</span></li>
+          <li><button type="button" data-jump="s4">四、版权与防侵权</button>
+            <span>授权范围 · 禁止行为 · 防伪机制 · 引用规范 · 商标</span></li>
+          <li><button type="button" data-jump="s5">五、隐私与数据</button>
+            <span>免注册 · 本地收藏 · 公开留言 · 问卷收集范围</span></li>
+          <li><button type="button" data-jump="s6">六、纠错与投诉</button>
+            <span>怎么提 · 处理时效 · 处理原则</span></li>
+          <li><button type="button" data-jump="s7">七、常见问题</button>
+            <span>9 个高频疑问</span></li>
+          <li><button type="button" data-jump="s8">八、版本与更新</button>
+            <span>指纹规则 · 更新方式 · 更新记录</span></li>
+        </ol>
+      </nav>
+
+      <section class="docsec" id="s1">
+        <h4>一、怎么用</h4>
+        <h5>1.1 检索与筛选</h5>
+        <ul>
+          <li>搜索框支持三种输入：企业全名或简称、上级集团名（如「中国电科」）、
+            行业关键词（如「能源」「地铁」「烟草」「半导体」）。</li>
+          <li>四个筛选可叠加：<b>类别</b>（央企在苏 / 省属国企 / 市属国企）、
+            <b>板块</b>（33 个行业板块）、<b>地市</b>（13 个设区市）、
+            <b>层级</b>（一级 / 二级 / 三级 / 四级）。叠加后上方会显示命中数量与构成。</li>
+          <li>排序可按序号、企业名称、地市、板块、层级、集团归属切换。</li>
+          <li>筛选条件会同步到网址（# 后面那段），复制链接给别人能还原同样的筛选结果。</li>
+          <li>列表先显示 60 家，底部「显示更多」继续加载，不做一次性全量渲染。</li>
+        </ul>
+        <h5>1.2 卡片上每个按钮的含义</h5>
+        <ul>
+          <li><b>官网 / 招聘</b>：只在该企业（或其上级集团）官网地址核实过时才出现，
+            直达官网，不跳第三方招聘站。核不到就不显示 —— 看不到链接说明没核实到，不是漏了。</li>
+          <li><b>工商信息 / 百科</b>：跳转爱企查与百度百科，方便你自己复核股权与基本信息。</li>
+          <li><b>留言</b>：进入这家企业的评论区；按钮上的蓝色数字是这家企业已有的留言条数。</li>
+          <li><b>加入对比</b>：把企业放进底部对比条，最多 4 家。</li>
+          <li><b>数据来源与核验</b>（卡片底部）：展开可看这一条的查证状态、来源说明与判断依据。</li>
+        </ul>
+        <h5>1.3 收藏</h5>
+        <ul>
+          <li>点卡片右上角星标即可收藏；点顶部「收藏」只看收藏，再点一次回到全部。</li>
+          <li>收藏只存在你自己的浏览器里，不上传、不跨设备同步，清浏览器数据会一起清掉。</li>
+        </ul>
+        <h5>1.4 对比</h5>
+        <ul>
+          <li>最多挑 4 家，底部出现对比条后点「开始对比」，横向比较关键字段。</li>
+          <li>对比表覆盖：类别、地市、板块、层级、集团归属、行业、查证状态、来源说明、企业概况。</li>
+        </ul>
+        <h5>1.5 留言墙（贴吧形态）</h5>
+        <ul>
+          <li>企业卡片上的「留言」是这家企业的评论区；「互助留言墙」是全部帖子的总览：
+            主题列表 → 点进去看楼主与楼层 → 每一层还能楼中楼回复。</li>
+          <li>站务贴固定在主题列表最前（带「置顶」标），新帖按时间倒序排在其后。</li>
+          <li>主题标题取正文第一行，所以发帖时第一行写得像标题会更整齐。</li>
+          <li>发帖不需要注册：填企业名 / 话题 + 正文即可；昵称留空就显示「匿名」。</li>
+          <li>内容发完立即上屏；刷新后以服务器数据为准。</li>
+        </ul>
+        <h5>1.6 手机端</h5>
+        <ul>
+          <li>底部五个标签：<b>名录</b>（回到顶部并聚焦搜索）、<b>留言墙</b>、<b>投稿</b>、
+            <b>说明</b>（本页）、<b>外观</b>（浅色 / 深色）。</li>
+          <li>向下滚动时顶部工具条与底部标签栏会收起，把整屏让给内容；向上一滚立刻回来。</li>
+          <li>滚动后顶部搜索栏会收成一行（搜索框 + 筛选），不再占两行。</li>
+          <li>弹层都是从底部升起的抽屉：左上角圆形返回键、点遮罩、或向下手势都能关闭。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s2">
+        <h4>二、数据说明</h4>
+        <h5>2.1 收录口径（硬性）</h5>
+        <ul>
+          <li>只收录<b>注册地在江苏省内</b>的一级集团主体及其直属的一、二级核心子公司；
+            不收录零散项目部、项目部性质分公司与注销空壳。</li>
+          <li>央企只收在苏的省级 / 核心主体（如国网江苏、五大发电江苏区域公司、驻宁科研院所）；
+            集团总部在京、仅在江苏设普通分支机构的（如部分央企的江苏销售分公司）不收录。</li>
+          <li>文化类省属单位与部分金融上市公司（如南京银行、紫金农商行、东吴证券、苏州银行等，
+            属参股或财政出资口径）<b>未列入</b>本名录。</li>
+          <li>区县国资与功能区国资（昆山、江阴、张家港等县级市，苏州工业园区、南京江北新区、
+            徐州经开区等）按口径暂未纳入。</li>
+        </ul>
+        <h5>2.2 每个字段什么意思</h5>
+        <ul>
+          <li><b>所属类别</b>：央企在苏 / 省属国企 / 市属国企，按出资人性质划分。</li>
+          <li><b>所属地市</b>：注册地所属的 13 个设区市；县级主体（如「苏州（常熟）」）
+            统一归并到所属设区市计数。</li>
+          <li><b>板块 / 行业</b>：板块是 33 个粗分类（便于筛选），行业是更细的经营范围表述。</li>
+          <li><b>层级</b>：在集团体系里的位置。一级＝集团本部（或央企在苏、省属一级主体）；
+            二级及以下＝体系内子公司，<b>直接母公司看「集团归属」</b>。</li>
+          <li><b>集团归属</b>：这一条的直接母公司或控股方，括号里注明能查到的持股比例。</li>
+          <li><b>查证状态</b>：已查证 / 已核实 / 已核实-存续独立法人 / 需再确认；
+            「需再确认」表示公开渠道口径冲突或不完整。</li>
+          <li><b>企业概况</b>：规模、层级、行业、评级、区域五项的简明判断；
+            标「(估)」是估算值，标「按 xx」是打分依据，都不是官方披露数字。</li>
+          <li><b>画像数字</b>：总资产 / 营收 / 注册资本（单位：亿元）与上市代码、主体评级，
+            只在该企业有公开财报或评级报告时才显示。</li>
+        </ul>
+        <h5>2.3 来源与核验</h5>
+        <ul>
+          <li>来源优先级：各级国资委官网（省属企业、监管企业名录）＞ 企业官网
+            （集团概况 / 成员企业 / 组织架构）＞ 政府公开文件与公告 ＞ 招聘简章 ＞
+            债券评级报告 ＞ 工商登记平台（启信宝 / 天眼查 / 企查查 / 爱企查）股权穿透。</li>
+          <li>832 条<b>每条都写了「来源说明」</b>，能回溯到具体栏目或登记信息；
+            未能逐页核到的栏目名一律不写，也不添加未经核对的事实。</li>
+          <li>官网与招聘链接必须核到真实入口才显示，一律不跳第三方招聘站。</li>
+        </ul>
+        <h5>2.4 数字校验</h5>
+        <ul>
+          <li>金额、营收、注册资本等数字过了一道校验闸（量级与单位复核），
+            明显异常的值会被剔除或标注，而不是照抄。</li>
+          <li>页面底部有<b>数据校验码</b>（数据内容的哈希前 16 位），
+            两份文件校验码相同即说明数据没被改过。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s3">
+        <h4>三、免责声明</h4>
+        <h5>3.1 信息性质</h5>
+        <ul>
+          <li>本名录是对公开信息的整理与汇编，仅供个人求职、研究与信息检索参考，
+            <b>不构成投资、就业、法律或任何专业建议</b>。</li>
+          <li>页面中的估算值、打分与排序是整理者基于公开信息的判断，不代表任何机构立场，
+            也不代表对应企业的真实经营状况。</li>
+        </ul>
+        <h5>3.2 时效性与准确性</h5>
+        <ul>
+          <li>企业工商信息、股权关系、财务与评级数据随时可能变更，
+            本页可能存在滞后或疏漏；一切以工商登记、企业公告与主管部门最新口径为准。</li>
+          <li>江苏省内国资在 2023–2026 年重组频繁，名单与股权关系可能仍在调整中；
+            用于申报、投资等正式场合前，建议以各级国资委最新书面口径复核。</li>
+        </ul>
+        <h5>3.3 第三方链接</h5>
+        <ul>
+          <li>「官网 / 招聘 / 工商信息 / 百科」会跳转到第三方站点，
+            其内容与可用性由该站点负责；核实时仍以官网最新页面为准。</li>
+        </ul>
+        <h5>3.4 责任限制</h5>
+        <ul>
+          <li>因使用或依赖本页信息而产生的任何直接或间接损失，本站及整理者不承担责任。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s4">
+        <h4>四、版权与防侵权</h4>
+        <h5>4.1 授权范围</h5>
+        <ul>
+          <li>© 2026 圭煜，保留全部权利。个人学习、求职、研究可自由使用，无需授权。</li>
+          <li>面向公众传播（转载、摘编、二次发布、做成榜单或数据集）与商业使用
+            （售卖、付费内容、商业报告、培训材料）需事先取得<b>书面授权</b>。</li>
+        </ul>
+        <h5>4.2 明确禁止</h5>
+        <ul>
+          <li>批量爬取、镜像站点、整页复制、去水印或去指纹后再发布；</li>
+          <li>把本名录数据用于对外售卖、引流课、付费社群或任何形式的商业分发；</li>
+          <li>抹除、伪造或替换页面中的水印、版本指纹、数据校验码与访问追踪码。</li>
+        </ul>
+        <h5>4.3 防伪机制（怎么识别盗版）</h5>
+        <ul>
+          <li><b>版本指纹</b>：形如 JSGQ-WEB-20261011-8713C9A5，日期 + 全页内容哈希前 8 位；
+            任何一处改动（包括样式）都会换指纹，用来核对线上到底是哪一版。</li>
+          <li><b>数据校验码</b>：只覆盖数据本身，两份文件校验码相同说明数据一致。</li>
+          <li><b>访问追踪码</b>：每次打开页面生成一个（形如 GY-1011-2311-X9PK），
+            以极淡的水印与零宽字符嵌在页面里，用于发现盗用与追溯来源。</li>
+          <li><b>背景水印</b>：页面底纹含「圭煜」字样，被截图转走后仍可识别来源。</li>
+        </ul>
+        <h5>4.4 引用规范</h5>
+        <ul>
+          <li>引用请注明来源「江苏央国企名录（圭煜）」并保留版本指纹；
+            引用具体条目时，建议同时保留该条目的「来源说明」。</li>
+        </ul>
+        <h5>4.5 商标与名称</h5>
+        <ul>
+          <li>企业名称、商标与标识归各自权利人所有；本页仅作客观指称与信息索引，
+            不含任何授权、合作或背书关系。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s5">
+        <h4>五、隐私与数据</h4>
+        <h5>5.1 本站不收集什么</h5>
+        <ul>
+          <li>不需要注册、登录，不索取手机号与邮箱，没有跟踪型广告与第三方统计脚本。</li>
+          <li>收藏与「只看收藏」存在你浏览器的 localStorage 里，
+            <b>不上传、不跨设备同步</b>，我们也看不到。</li>
+          <li>不建立个人画像、不做跨站追踪。</li>
+        </ul>
+        <h5>5.2 留言是公开的</h5>
+        <ul>
+          <li>留言墙与评论区的所有内容<b>对所有人可见</b>，包括你填的昵称；
+            不想留名就留空，会显示「匿名」。</li>
+          <li>请勿在留言里填写手机号、身份证号或内部未公开信息；
+            这类内容我们有权直接删除。</li>
+        </ul>
+        <h5>5.3 投稿问卷</h5>
+        <ul>
+          <li>「投稿 / 纠错」走腾讯问卷（wj.qq.com）。问卷平台会记录提交时间、IP 与浏览器标识等
+            基础信息，用于防刷与核对，具体规则见腾讯问卷的隐私政策。</li>
+          <li>问卷内容每晚 23:30 自动汇总上墙；含违规词或明显无效的会被过滤。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s6">
+        <h4>六、纠错与投诉</h4>
+        <h5>6.1 怎么提</h5>
+        <ul>
+          <li>数据纠错 / 补充企业：走「投稿」问卷（可附来源链接），或直接在留言墙发帖。</li>
+          <li>求职经验 / 内部情况：建议写清「年份 + 批次 + 岗位大类 + 流程节点」，
+            并注明信息来源，方便后来人对号入座。</li>
+        </ul>
+        <h5>6.2 处理时效与原则</h5>
+        <ul>
+          <li>问卷内容每晚 23:30 自动汇总；留言墙内容是即时的。</li>
+          <li>有出处优先采纳；「听说 / 转述」会照原样标注来源，不当作事实陈述；
+            无法核实又明显失实的会被删除。</li>
+          <li>侵权投诉：通过投稿问卷提交，注明具体条目与权利证明，核实后删除或更正。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s7">
+        <h4>七、常见问题</h4>
+        <h5>7.1 为什么这家企业没有「官网」按钮？</h5>
+        <ul><li>因为没有核实到该企业（或其上级集团）的真实官网地址。宁可不显示，也不跳错站或山寨站；
+          你知道正确地址的话，欢迎投稿补充。</li></ul>
+        <h5>7.2 同一个集团为什么会有好几条？</h5>
+        <ul><li>名录收录到子公司层级，条目里的「集团归属」就是它的直接母公司；
+          想看整个集团有哪些主体，直接搜集团名。</li></ul>
+        <h5>7.3 为什么我所在区县的国企不在名单里？</h5>
+        <ul><li>收录口径只到「省属 / 设区市属一级集团及其核心子公司」，
+          区县国资与功能区国资（昆山、江阴、苏州工业园区、江北新区等）暂未纳入。</li></ul>
+        <h5>7.4 数据多久更新一次？</h5>
+        <ul><li>留言与投稿每晚 23:30 自动汇总上墙；名录主体数据的更新以页面标注的「查证日期」为准，
+          重大变更会换版本指纹，可在页脚核对。</li></ul>
+        <h5>7.5 营收写着「(估)」，能直接引用吗？</h5>
+        <ul><li>「(估)」表示按公开信息与行业惯例估算，不是官方披露数字，只能当量级参考；
+          需要精确数字请以年报或评级报告为准。</li></ul>
+        <h5>7.6 能拿去商用或转载吗？</h5>
+        <ul><li>个人学习求职可以自由使用；对外传播与商业使用需要事先书面授权，详见第四节。</li></ul>
+        <h5>7.7 手机上怎么快速回到顶部？</h5>
+        <ul><li>点底部标签栏的「名录」即回到顶部并聚焦搜索框；桌面端右下角有圆形回到顶部按钮。</li></ul>
+        <h5>7.8 留言 / 投稿要注册吗？</h5>
+        <ul><li>都不用。留言可直接发，投稿问卷也不用注册。</li></ul>
+        <h5>7.9 收藏会同步到别的设备吗？</h5>
+        <ul><li>不会。收藏只保存在当前浏览器里，换设备或清浏览器数据后需要重新收藏。</li></ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
+
+      <section class="docsec" id="s8">
+        <h4>八、版本与更新</h4>
+        <h5>8.1 版本指纹怎么读</h5>
+        <ul>
+          <li>格式 <b>JSGQ-WEB-日期-哈希</b>，例如 JSGQ-WEB-20261011-8713C9A5：
+            20261011 是生成日期，后 8 位是全页内容（数据 + 说明 + 样式 + 脚本）的哈希前缀。</li>
+          <li>用途：任何一处改动都会换指纹，所以「线上指纹」与「本地文件指纹」一致，
+            就说明线上跑的就是这一版；别处出现本名录数据时，也可用指纹比对来源版本。</li>
+        </ul>
+        <h5>8.2 更新方式</h5>
+        <ul>
+          <li>数据与页面同源：名录整体重新生成后发布；留言墙与投稿内容由每晚的计划任务自动并入。</li>
+          <li>页面是单文件（含全部数据），无外部依赖，离线打开也能看（留言功能除外）。</li>
+        </ul>
+        <h5>8.3 更新记录</h5>
+        <ul>
+          <li>2026-10-09：全量名录数据查证完成（832 家）。</li>
+          <li>2026-10-10：增补 33 家央企在苏主体，形成 832 家完整版。</li>
+          <li>2026-10-11：832 行「来源说明」全部改写为可回溯出处；上线企业评论区与互助留言墙；
+            手机端改版（玻璃材质、深色模式、底部标签栏）；新增本说明页。</li>
+        </ul>
+        <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
+      </section>
     </div>
   </div>
 </div>
@@ -1473,7 +1732,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-8713C9A5", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-F1A2D34D", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2390,6 +2649,19 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   }
   $("aboutback").addEventListener("click", closeAbout);
   $("aboutmodal").addEventListener("click", function(e){ if(e.target === this) closeAbout(); });
+  // 目录跳转：在抽屉内部滚动到对应章节（不改网址，避免和筛选的 #hash 打架）
+  $("aboutmodal").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-jump]") : null;
+    if(!b) return;
+    e.preventDefault();
+    var sheet = $("aboutmodal").querySelector(".sheet");
+    var id = b.getAttribute("data-jump");
+    if(id === "toc"){ sheet.scrollTo({ top:0, behavior:"smooth" }); return; }
+    var el = $("aboutmodal").querySelector("#" + id);
+    if(!el) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    sheet.scrollTo({ top: Math.max(0, el.offsetTop - 18), behavior: reduce ? "auto" : "smooth" });
+  });
   $("aboutopen").addEventListener("click", openAbout);
   $("docmodal").addEventListener("click", function(e){
     if(e.target === this){ this.hidden = true; document.body.style.overflow = ""; }
