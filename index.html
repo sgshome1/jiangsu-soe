@@ -88,6 +88,11 @@ header,section,main{position:relative; z-index:1}
   color:var(--muted); letter-spacing:-.012em}
 .lede b{color:var(--ink-2); font-weight:600}
 .heroStats{display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:28px 0 0}
+.heroCta{display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:22px 0 0}
+.heroCta .btn{padding:13px 24px; font-size:15px}
+.btn .cnt{display:inline-grid; place-items:center; min-width:20px; height:20px;
+  padding:0 6px; margin-left:8px; border-radius:980px; font-size:11.5px; font-weight:600;
+  background:var(--blue); color:#fff; font-variant-numeric:tabular-nums}
 .hs{flex:0 0 auto; min-width:124px; padding:13px 20px 12px; border-radius:18px;
   background:rgba(255,255,255,.78); border:1px solid rgba(0,0,0,.055);
   box-shadow:0 1px 2px rgba(0,0,0,.03), 0 8px 22px rgba(0,0,0,.05);
@@ -397,6 +402,10 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
       <div class="hs"><b id="hWeb">0</b><span>家可直达官网</span></div>
       <div class="hs fav"><b id="hFav">0</b><span>家已收藏</span></div>
     </div>
+    <div class="heroCta">
+      <button class="btn primary" id="postA">我要投稿 / 纠错 / 补充企业</button>
+      <button class="btn" id="wallA">互助留言墙<b class="cnt" id="wallA-n">0</b></button>
+    </div>
     <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
       版本指纹 <span class="fp" id="fp"></span></p>
   </div>
@@ -414,6 +423,8 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
       <button class="btn primary act-share" id="share">复制本页链接</button>
       <button class="btn act-reset" id="reset">重置</button>
       <button class="btn act-filter" id="filterbtn" aria-expanded="false">筛选<span class="badge" id="fbadge" hidden>0</span></button>
+      <button class="btn act-post" id="postB">投稿</button>
+      <button class="btn act-wall" id="wallB">留言墙<b class="cnt" id="wallB-n">0</b></button>
     </div>
   </div>
 </section>
@@ -562,7 +573,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-03488A05", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-5882C0C2", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -733,6 +744,10 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     $("hSector").textContent = Object.keys(secs).length;
     $("hWeb").textContent = web;
     $("hFav").textContent = FAV.length;
+    // 留言条数：页面打开就取一次，让首屏和吸顶栏的角标立刻有数
+    fetch("comments.json").then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.count); } })
+      .catch(function(){});
   }
 
   function render(){
@@ -1023,11 +1038,17 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     renderMsgs();
     fetch("comments.json?t=" + Date.now())
       .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function(d){ MSG_CACHE = d; renderMsgs(); })
+      .then(function(d){ MSG_CACHE = d; setWallCount(d.count); renderMsgs(); })
       .catch(function(){
         $("msglist").innerHTML = "<div class='msg'><p>留言还没同步过来（数据每晚更新一次）。" +
           "点下面「我也说一句」，你的留言下一次同步就会出现在这里。</p></div>";
       });
+  }
+  function setWallCount(n){
+    var a = $("wallA-n"), b = $("wallB-n"), c = $("msgcount");
+    if(a) a.textContent = n || 0;
+    if(b) b.textContent = n || 0;
+    if(c) c.textContent = n ? "（" + n + "）" : "";
   }
   function openMsgs(company){
     MSG_FILTER = company || "";
@@ -1035,6 +1056,12 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   }
   function closeMsgs(){ $("msgmodal").hidden = true; document.body.style.overflow = ""; }
   $("msgopen").addEventListener("click", function(){ openMsgs(""); });
+  $("wallA").addEventListener("click", function(){ openMsgs(""); });
+  $("wallB").addEventListener("click", function(){ openMsgs(""); });
+  $("postA").addEventListener("click", function(){
+    window.open(FORM_URL, "_blank", "noopener"); });
+  $("postB").addEventListener("click", function(){
+    window.open(FORM_URL, "_blank", "noopener"); });
   $("msgclose").addEventListener("click", closeMsgs);
   $("msgmodal").addEventListener("click", function(e){ if(e.target === this) closeMsgs(); });
   $("msgnew").addEventListener("click", function(){
