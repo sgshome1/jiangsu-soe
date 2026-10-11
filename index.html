@@ -1407,7 +1407,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-0785743E", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-9BABD465", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2356,13 +2356,23 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     // 先把列表高度占住，卡片渲染完再交还，避免下方内容被顶一下（布局抖动）
     var list = $("list");
     if(list) list.style.minHeight = Math.round(Math.min(window.innerHeight * 0.6, 640)) + "px";
-    var go = function(){
+    function soon(fn, ms){
+      setTimeout(function(){
+        if(window.requestIdleCallback) requestIdleCallback(fn, { timeout: 300 });
+        else setTimeout(fn, 50);
+      }, ms);
+    }
+    // 先放一小批（几十毫秒的量级），开场动画结束后再补齐，
+    // 这样开场不被长任务打断，列表也不会空着等
+    soon(function(){
+      state.shown = Math.min(12, PAGE);
       render();
-      if(typeof revealCards === "function") revealCards();
+    }, 240);
+    soon(function(){
+      state.shown = PAGE;
+      render();
       if(list) list.style.minHeight = "";
-    };
-    if(window.requestIdleCallback) requestIdleCallback(go, { timeout: 700 });
-    else setTimeout(go, 120);
+    }, 1750);
   })();
 })();
 </script>
