@@ -973,8 +973,8 @@ html{scroll-behavior:smooth}
   22%{opacity:.55} 100%{opacity:0; transform:translateX(240%) rotate(9deg)}}
 @keyframes popIn{from{opacity:0; transform:scale(.45)} to{opacity:1; transform:none}}
 
-/* 1) 导航从天而降 */
-.topbar{animation:navIn .95s cubic-bezier(.16,1,.3,1) both}
+/* 1) 导航从天而降（动效挂内层，外层留给「滚动让位」的位移） */
+.topbar .wrap{animation:navIn .95s cubic-bezier(.16,1,.3,1) both}
 
 /* 2) 英雄区：极光铺开 + 一抹光泽扫过 */
 .hero{position:relative; overflow:clip}
@@ -1040,7 +1040,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
 .trace{left:16px; right:auto}
 
 @media (prefers-reduced-motion: reduce){
-  .topbar,.hero::before,.hero::after,.hero .eyebrow,.hero h1,.hero .lede,
+  .topbar .wrap,.hero::before,.hero::after,.hero .eyebrow,.hero h1,.hero .lede,
   .heroStats,.heroCta,.hero .fineprint,.controls .wrap,.filterblock .wrap,.chip-n{
     animation:none !important}
   html.js-anim .hero .wrap{transform:none; opacity:1}
@@ -1048,6 +1048,53 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
 @media (max-width:900px){
   .totop{display:none}
   .trace{left:12px}
+}
+
+/* ================= 手机性能 & 顶部让位 ================= */
+@keyframes h1InM{
+  0%{opacity:0; transform:translateY(22px); letter-spacing:.04em}
+  100%{opacity:1; transform:none; letter-spacing:-.03em}}
+@keyframes auroraInM{from{opacity:0; transform:scale(1.1)} to{opacity:.8; transform:scale(1)}}
+
+@media (max-width:900px){
+  :root{--glass-card:rgba(255,255,255,.9)}
+  html[data-theme="noir"]{--glass-card:rgba(34,34,38,.92)}
+
+  /* 1) 少一层实时模糊：卡片改「高不透明玻璃」、不做 backdrop-filter；
+        导航/搜索/标签栏的模糊半径也降下来 —— 手机 GPU 立省一大截 */
+  .card{background:var(--glass-card);
+    -webkit-backdrop-filter:none; backdrop-filter:none}
+  .topbar .wrap,.controls .wrap,.tabbar,.cmpbar{
+    -webkit-backdrop-filter:blur(16px) saturate(170%);
+    backdrop-filter:blur(16px) saturate(170%)}
+
+  /* 2) 开场动效去掉昂贵的滤镜动画，只动 opacity / transform */
+  .hero::before{filter:none; animation:auroraInM 1.5s cubic-bezier(.16,1,.3,1) .05s both,
+    auroraDrift 22s ease-in-out 1.6s infinite alternate}
+  .hero::after{display:none}
+  .hero h1{animation:h1InM 1s cubic-bezier(.16,1,.3,1) .1s both}
+  .hero .lede{animation:fadeRise .8s cubic-bezier(.16,1,.3,1) .26s both}
+  .heroStats{animation:panelIn .85s cubic-bezier(.16,1,.3,1) .36s both}
+  .heroCta{animation:fadeRise .8s cubic-bezier(.16,1,.3,1) .48s both}
+  .controls .wrap{animation:panelIn .8s cubic-bezier(.16,1,.3,1) .42s both}
+  .filterblock .wrap{animation:fadeRise .8s cubic-bezier(.16,1,.3,1) .5s both}
+
+  /* 3) 顶部两条：滚动后收成一行；向下滚时整条让位，向上滚立刻回来 */
+  .topbar,.controls{transition:transform .42s cubic-bezier(.32,.72,0,1)}
+  html.chrome-hidden .topbar{transform:translateY(-135%)}
+  html.chrome-hidden .controls{transform:translateY(-210%)}
+  html.chrome-hidden .topbar,html.chrome-hidden .controls{pointer-events:none}
+
+  html.scrolled .controls .wrap{padding:8px 10px; border-radius:980px}
+  html.scrolled .searchrow{flex-wrap:nowrap; gap:8px}
+  html.scrolled .searchrow .search{flex:1 1 auto; min-width:0}
+  html.scrolled .search input{height:40px; font-size:14.5px; border-radius:13px;
+    padding-left:34px}
+  html.scrolled .search svg{left:12px; width:14px; height:14px}
+  html.scrolled .searchrow .act-filter{flex:0 0 auto; width:auto; height:40px;
+    border-radius:13px; padding:0 14px; font-size:13.5px}
+  html.scrolled .topbar .wrap{padding:7px 14px}
+  html.scrolled .brand-txt b{font-size:14px}
 }
 </style>
 </head>
@@ -1091,8 +1138,6 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
       <button class="btn primary" id="postA">我要投稿 / 纠错 / 补充企业</button>
       <button class="btn" id="wallA">互助留言墙<b class="cnt" id="wallA-n">0</b></button>
     </div>
-    <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
-      版本指纹 <span class="fp" id="fp"></span></p>
   </div>
 </header>
 
@@ -1168,6 +1213,8 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
         <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.4-4.2A8 8 0 1 1 21 12z"/></svg>
         互助留言墙<span id="msgcount"></span></button>
     </div>
+    <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
+      版本指纹 <span class="fp" id="fp"></span></p>
     <div class="fpbox">版本指纹 <b id="fp2"></b>　｜　数据校验码 <b id="dh"></b>　｜　本次访问追踪码 <b id="tr"></b></div>
   </footer>
 </main>
@@ -1292,7 +1339,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-9B047F0E", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-0760BCD2", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1606,6 +1653,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   // 滚动态：导航收一口、英雄区缓慢离场、回到顶部浮现
   (function(){
     var root = document.documentElement, raf = 0, last = -1;
+    var lastY = 0;
     function apply(){
       raf = 0;
       var y = window.pageYOffset || root.scrollTop || 0;
@@ -1614,6 +1662,11 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
       root.classList.toggle("scrolled", y > 8);
       // 英雄区视差：越往下越淡、越往上走（封顶，避免滚太久变形）
       root.style.setProperty("--sy", String(Math.min(y, 300)));
+      // 手机：向下滚把顶部两条收起，向上滚立刻回来（给内容让位）
+      var dy = y - lastY;
+      if(y < 120 || dy < -6) root.classList.remove("chrome-hidden");
+      else if(dy > 6 && y > 260) root.classList.add("chrome-hidden");
+      if(Math.abs(dy) > 6) lastY = y;
     }
     function onScroll(){ if(!raf) raf = requestAnimationFrame(apply); }
     window.addEventListener("scroll", onScroll, { passive:true });
