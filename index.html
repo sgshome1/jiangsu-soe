@@ -1117,7 +1117,6 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   .modal .sheet .close{flex-wrap:wrap; gap:8px}
   .modal .sheet .close .btn{flex:1 1 auto; white-space:nowrap; padding:11px 15px;
     font-size:14px}
-  .modal .sheet .close #msgnew{flex:1 1 100%}
   /* 弹层改成不透明后，输入框要给一点边界才看得出是输入框 */
   .modal .compose input,.modal .compose select,.modal .compose textarea,
   .modal .inlineReply textarea{background:rgba(120,120,128,.10);
@@ -1128,6 +1127,30 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   html[data-theme="noir"] .modal .inlineReply textarea{background:rgba(120,120,128,.18)}
   .modal .compose{background:transparent; border:0; padding:0}
   .msglist{max-height:46vh}
+}
+
+/* ================= 弹层左上角返回键（对齐 iOS 圆形返回） ================= */
+.sheet{position:relative}
+.sheetback{position:absolute; left:16px; top:16px; z-index:3; width:40px; height:40px;
+  display:grid; place-items:center; padding:0; cursor:pointer; border-radius:50%;
+  border:1px solid rgba(15,23,32,.06); background:rgba(255,255,255,.86);
+  color:#b4b4bb;
+  box-shadow:0 1px 2px rgba(15,23,32,.05), 0 0 0 0 rgba(0,0,0,0);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  transition:background .28s ease, color .28s ease, transform .22s cubic-bezier(.32,1.3,.5,1),
+             box-shadow .28s ease}
+.sheetback svg{width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:2.6;
+  stroke-linecap:round; stroke-linejoin:round}
+.sheetback:hover{background:#fff; color:#8b8b93; box-shadow:0 2px 6px rgba(15,23,32,.09)}
+.sheetback:active{transform:scale(.9)}
+html[data-theme="noir"] .sheetback{background:rgba(255,255,255,.10);
+  border-color:rgba(255,255,255,.14); color:rgba(235,235,245,.5)}
+html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
+  color:rgba(235,235,245,.8)}
+.sheet > h3:first-of-type{padding-left:52px; min-height:28px}
+@media (max-width:900px){
+  .sheetback{left:14px; top:22px; width:38px; height:38px}
+  .sheet > h3:first-of-type{padding-left:50px}
 }
 </style>
 </head>
@@ -1260,24 +1283,28 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
 
 <div class="modal" id="modal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="企业对比">
+    <button class="sheetback" id="cmpback" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3>企业对比</h3>
     <p class="sm" id="cmpsub"></p>
     <div id="cmpbody"></div>
-    <div class="close"><button class="btn" id="closecmp">关闭</button></div>
   </div>
 </div>
 
 <div class="modal" id="docmodal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="统计口径与来源说明">
+    <button class="sheetback" id="docback" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3>统计口径与来源说明</h3>
     <p class="sm" id="docsub"></p>
     <div id="docbody"></div>
-    <div class="close"><button class="btn" id="closedoc">关闭</button></div>
   </div>
 </div>
 
 <div class="modal" id="fbmodal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="投稿 / 留言">
+    <button class="sheetback" id="fbback" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3 id="fbtitle">投稿 · 纠错 · 补充</h3>
     <p class="sm">发现数据错了、有企业要补充、或想聊聊求职经验——都可以从这里发过来。
       内容会公开在留言墙上，大家互相补充。</p>
@@ -1309,13 +1336,14 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
     <div class="fbacts">
       <button class="btn primary" id="fbgh">打开 GitHub 提交</button>
       <button class="btn" id="fbcopy">复制内容</button>
-      <button class="btn" id="fbcancel">关闭</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="msgmodal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="互助留言墙">
+    <button class="sheetback" id="msgback" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3 id="msgtitle">互助留言墙</h3>
     <p class="sm" id="msgsub">大家提交的纠错、补充与求职经验。</p>
     <div class="msglist" id="msglist"></div>
@@ -1335,11 +1363,6 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
         <span class="ctip" id="cftip"></span>
         <button class="btn primary" id="cfsend">发帖</button>
       </div>
-    </div>
-    <div class="close">
-      <button class="btn primary" id="msgnew">写一条，直接上屏</button>
-      <button class="btn" id="msgform">用问卷投稿（每晚同步）</button>
-      <button class="btn" id="msgclose">关闭</button>
     </div>
   </div>
 </div>
@@ -1372,7 +1395,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-90BE709F", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-9E5F2078", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1843,7 +1866,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
     state.favOnly = !state.favOnly; state.shown = PAGE; render();
   });
   $("clrcmp").addEventListener("click", function(){ state.cmp = []; render(); });
-  $("closecmp").addEventListener("click", closeCmp);
+  $("cmpback").addEventListener("click", closeCmp);
   $("modal").addEventListener("click", function(e){ if(e.target === this) closeCmp(); });
   document.addEventListener("keydown", function(e){
     if(e.key !== "Escape") return;
@@ -1900,7 +1923,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   $("fbopen").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener");
   });
-  $("fbcancel").addEventListener("click", closeFB);
+  $("fbback").addEventListener("click", closeFB);
   $("fbmodal").addEventListener("click", function(e){ if(e.target === this) closeFB(); });
   $("fbgh").addEventListener("click", function(){
     var p = fbPayload();
@@ -2168,22 +2191,13 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   $("wallA").addEventListener("click", function(){ openMsgs(""); });
   $("postA").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener"); });
-  $("msgclose").addEventListener("click", closeMsgs);
+  $("msgback").addEventListener("click", closeMsgs);
   $("msgmodal").addEventListener("click", function(e){
     if(e.target === this){ closeMsgs(); return; }
     // 「返回帖子列表」在 #msgsub 里，不在 #msglist 内，所以要在弹层这一层兜住
     if(e.target.closest("#backlist")){
       e.preventDefault(); MSG_VIEW = "list"; MSG_OPEN = ""; renderMsgs();
     }
-  });
-  $("msgnew").addEventListener("click", function(){
-    var box = document.querySelector("#msgmodal .compose");
-    if(box && box.scrollIntoView){ box.scrollIntoView({ block:"center", behavior:"smooth" }); }
-    var co = $("cfcompany");
-    if(co && !MSG_FILTER){ co.focus(); } else { $("cfbody").focus(); }
-  });
-  $("msgform").addEventListener("click", function(){
-    window.open(FORM_URL, "_blank", "noopener");
   });
   $("msglist").addEventListener("click", function(e){
     if(e.target.closest("#backlist")){ e.preventDefault(); MSG_VIEW = "list"; MSG_OPEN = ""; renderMsgs(); return; }
@@ -2282,7 +2296,7 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
     $("docmodal").hidden = false;
     document.body.style.overflow = "hidden";
   });
-  $("closedoc").addEventListener("click", function(){
+  $("docback").addEventListener("click", function(){
     $("docmodal").hidden = true; document.body.style.overflow = "";
   });
   $("docmodal").addEventListener("click", function(e){
