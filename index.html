@@ -1839,6 +1839,9 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   <button type="button" data-tab="wall">
     <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4 3v-5.6A8 8 0 0 1 13 4a8 8 0 0 1 8 8z"></path></svg>
     <span>互助吧</span><b class="tab-n" id="tabWallN">0</b></button>
+  <button type="button" data-tab="follow">
+    <svg viewBox="0 0 24 24"><circle cx="10" cy="7.8" r="3.1"/><path d="M4.8 18.6c.3-3.1 2.6-5.1 5.2-5.1s4.9 2 5.2 5.1"/><path d="M18.2 6.6v6M15.2 9.6h6"/></svg>
+    <span>关注</span></button>
   <button type="button" data-tab="post">
     <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>投稿</span></button>
   <button type="button" data-tab="about">
@@ -1863,7 +1866,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261012-4120216B", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-ED54157E", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2228,6 +2231,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
       if(act === "top"){ window.scrollTo({ top:0, behavior:"smooth" });
         var q = $("q"); if(q) setTimeout(function(){ q.focus(); }, 320); }
       else if(act === "wall"){ openMsgs(""); }
+      else if(act === "follow"){ openFollow(); }
       else if(act === "post"){ window.open(FORM_URL, "_blank", "noopener"); }
       else if(act === "about"){ openAbout(); }
       else if(act === "theme"){
