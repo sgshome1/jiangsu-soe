@@ -443,12 +443,12 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   --wall-base:#e7ecf7;
   --wall-1:rgba(122,170,255,.95); --wall-2:rgba(196,150,255,.85);
   --wall-3:rgba(118,226,208,.80); --wall-4:rgba(255,190,150,.80);
-  --glass:rgba(255,255,255,.52); --glass-2:rgba(255,255,255,.34);
-  --glass-solid:rgba(255,255,255,.76);
-  --glass-line:rgba(255,255,255,.62); --glass-hi:rgba(255,255,255,.9);
-  --label:#1c1c1e; --label-2:rgba(60,60,67,.60); --label-3:rgba(60,60,67,.32);
+  --glass:rgba(255,255,255,.66); --glass-2:rgba(255,255,255,.52);
+  --glass-solid:rgba(255,255,255,.86);
+  --glass-line:rgba(255,255,255,.72); --glass-hi:rgba(255,255,255,.95);
+  --label:#151517; --label-2:rgba(38,38,44,.74); --label-3:rgba(38,38,44,.48);
   --tint:#007aff; --tint-d:#0066d6; --orange:#ff9500; --green:#34c759;
-  --sep:rgba(60,60,67,.16); --mark:rgba(255,214,10,.35);
+  --sep:rgba(60,60,67,.22); --mark:rgba(255,214,10,.42);
   --sh-glass:0 10px 30px rgba(20,30,60,.14), 0 2px 6px rgba(20,30,60,.06);
   --sh-pop:0 24px 70px rgba(15,25,50,.28);
   --blue:#007aff; --blue-d:#0066d6; --seg:rgba(255,255,255,.4); --line:var(--sep);
@@ -457,12 +457,12 @@ html[data-theme="noir"]{
   --wall-base:#050508;
   --wall-1:rgba(40,90,220,.55); --wall-2:rgba(120,60,200,.45);
   --wall-3:rgba(20,140,140,.42); --wall-4:rgba(180,80,40,.35);
-  --glass:rgba(28,28,32,.52); --glass-2:rgba(44,44,50,.42);
-  --glass-solid:rgba(28,28,32,.78);
-  --glass-line:rgba(255,255,255,.15); --glass-hi:rgba(255,255,255,.22);
-  --label:#fff; --label-2:rgba(235,235,245,.62); --label-3:rgba(235,235,245,.34);
+  --glass:rgba(30,30,34,.66); --glass-2:rgba(48,48,54,.56);
+  --glass-solid:rgba(30,30,34,.88);
+  --glass-line:rgba(255,255,255,.18); --glass-hi:rgba(255,255,255,.26);
+  --label:#fff; --label-2:rgba(238,238,246,.78); --label-3:rgba(238,238,246,.52);
   --tint:#0a84ff; --tint-d:#3f9bff; --orange:#ff9f0a; --green:#30d158;
-  --sep:rgba(235,235,245,.15);
+  --sep:rgba(235,235,245,.2);
   --sh-glass:0 14px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.4);
   --sh-pop:0 30px 80px rgba(0,0,0,.7);
   --blue:#0a84ff; --blue-d:#3f9bff; --seg:rgba(255,255,255,.1);
@@ -830,11 +830,90 @@ mark{background:var(--mark); color:inherit; border-radius:6px}
   .hs:nth-child(-n+2){border-top:0}
   .hs:nth-child(5){grid-column:1 / -1}
 }
+
+/* ================= 打磨层：可读性 / 动效 / 细节 ================= */
+/* 1) 文字对比度：正文、次要信息都按可读性提一档 */
+.hint,.mix,.stats2 span,.toolbar label,.card .meta{color:var(--label-2)}
+.facts dt,.metric i,.brand-txt b{color:var(--label-2)}
+.hero .fineprint{color:var(--label-3)}
+.card .meta{color:var(--label-2)}
+.srcbox{color:var(--label-2)}
+.tag.cen{color:#0055b8}
+.tag.soe{color:#8f4f00}
+.tag.gov{color:#146b33}
+.chip,.chip.go,.chip.say{color:#0a5ecf}
+.stats2 b{color:var(--label)}
+.theme-note{color:var(--label-2)}
+
+/* 2) 玻璃本体再实一点，字压在背景上更清楚 */
+.card{-webkit-backdrop-filter:blur(22px) saturate(170%); backdrop-filter:blur(22px) saturate(170%)}
+.topbar .wrap,.controls .wrap,.heroStats,.cmpbar,.sheet,.tabbar{
+  -webkit-backdrop-filter:blur(30px) saturate(180%); backdrop-filter:blur(30px) saturate(180%)}
+
+/* 3) 键盘可见焦点 */
+:focus-visible{outline:2.5px solid var(--tint); outline-offset:2px; border-radius:14px}
+.chip:focus-visible,.btn:focus-visible,.favbtn:focus-visible,select:focus-visible{
+  outline:2.5px solid var(--tint); outline-offset:2px}
+input:focus-visible,textarea:focus-visible{outline:none}
+
+/* 4) 动效：入场、揭示、弹层、主题切换 */
+@keyframes riseIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+@keyframes cardIn{from{opacity:0; transform:translateY(16px) scale(.985)}
+  to{opacity:1; transform:none}}
+@keyframes fadeIn{from{opacity:0} to{opacity:1}}
+@keyframes sheetIn{from{opacity:0; transform:translateY(18px) scale(.97)}
+  to{opacity:1; transform:none}}
+@keyframes sheetUp{from{opacity:0; transform:translateY(100%)} to{opacity:1; transform:none}}
+.hero .eyebrow,.hero h1,.hero .lede,.heroStats,.heroCta,.hero .fineprint{
+  animation:riseIn .72s cubic-bezier(.22,1,.36,1) both}
+.hero .eyebrow{animation-delay:.04s} .hero h1{animation-delay:.1s}
+.hero .lede{animation-delay:.16s} .heroStats{animation-delay:.22s}
+.heroCta{animation-delay:.28s} .hero .fineprint{animation-delay:.34s}
+.heroStats,.sec-hd{animation-fill-mode:both}
+html.js-anim .grid .card{opacity:0}
+.grid .card.in{animation:cardIn .58s cubic-bezier(.22,1,.36,1) both}
+.modal:not([hidden]){animation:fadeIn .28s ease both}
+.modal:not([hidden]) .sheet{animation:sheetIn .46s cubic-bezier(.22,1.1,.36,1) both}
+.cmpbar.show{animation:riseIn .4s cubic-bezier(.22,1,.36,1) both}
+body,.card,.topbar .wrap,.controls .wrap,.heroStats,.btn,.chip,.sheet,.tabbar,select,input,
+.tag,.facts dt,.stats2 b,.footer,.srcbox{
+  transition:background-color .5s cubic-bezier(.32,.72,0,1),
+             color .35s ease, border-color .5s ease, box-shadow .35s ease,
+             background-image .5s ease}
+.hs b,.stats2 b,.meta,.mix,.hint{transition:color .35s ease}
+
+/* 5) 细节：按压反馈、滚动条、选中色、空态 */
+.card:active{transform:scale(.996)}
+.card{transition:transform .3s cubic-bezier(.32,.72,0,1),
+  background-color .5s cubic-bezier(.32,.72,0,1), box-shadow .35s ease, border-color .5s ease}
+html{scroll-behavior:smooth}
+::selection{background:rgba(0,122,255,.22)}
+.empty{display:flex; flex-direction:column; align-items:center; gap:8px}
+.empty::before{content:"⌕"; font-size:28px; color:var(--label-3); line-height:1}
+*{scrollbar-width:thin; scrollbar-color:rgba(120,120,128,.5) transparent}
+.msglist::-webkit-scrollbar,.sheet::-webkit-scrollbar{width:8px}
+.msglist::-webkit-scrollbar-thumb,.sheet::-webkit-scrollbar-thumb{
+  background:rgba(120,120,128,.45); border-radius:980px}
+.tabbar button[data-tab="top"]{color:var(--tint)}
+@media (max-width:900px){
+  .modal{align-items:end; padding:0}
+  .modal .sheet{border-radius:26px 26px 0 0; max-height:92vh; width:100%;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+  .modal:not([hidden]) .sheet{animation:sheetUp .42s cubic-bezier(.22,1,.36,1) both}
+}
+@media (prefers-reduced-motion: reduce){
+  .hero .eyebrow,.hero h1,.hero .lede,.heroStats,.heroCta,.hero .fineprint,
+  .grid .card,.modal:not([hidden]) .sheet,.cmpbar.show{animation:none !important}
+  .grid .card{opacity:1 !important}
+  html{scroll-behavior:auto}
+  *{transition:none !important}
+}
 </style>
 </head>
 <body>
 <script>try{var _t=localStorage.getItem("jsgq_theme_v1")||"ivory";
-document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
+document.documentElement.setAttribute("data-theme",_t);}catch(e){}
+document.documentElement.className += " js-anim";</script>
 
 <div class="topbar">
   <div class="wrap">
@@ -882,8 +961,6 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
       <button class="btn primary act-share" id="share">复制本页链接</button>
       <button class="btn act-reset" id="reset">重置</button>
       <button class="btn act-filter" id="filterbtn" aria-expanded="false">筛选<span class="badge" id="fbadge" hidden>0</span></button>
-      <button class="btn act-post" id="postB">投稿</button>
-      <button class="btn act-wall" id="wallB">留言墙<b class="cnt" id="wallB-n">0</b></button>
     </div>
   </div>
 </section>
@@ -1064,7 +1141,7 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-75837093", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-67460118", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1256,6 +1333,10 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     $("hSector").textContent = Object.keys(secs).length;
     $("hWeb").textContent = web;
     $("hFav").textContent = FAV.length;
+    countUp($("hTotal"), DATA.length);
+    countUp($("hCity"), Object.keys(cities).length);
+    countUp($("hSector"), Object.keys(secs).length);
+    countUp($("hWeb"), web);
     // 留言条数：页面打开就取一次，让首屏和吸顶栏的角标立刻有数
     fetch("board.json").then(function(r){ return r.ok ? r.json() : null; })
       .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0);
@@ -1267,6 +1348,7 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     var rows = sortRows(DATA.filter(match));
     var q = state.q, slice = rows.slice(0, state.shown);
     $("list").innerHTML = slice.map(function(r){ return card(r, q); }).join("");
+    revealCards();
     $("n").textContent = rows.length;
     var c = { "央企在苏":0, "省属国企":0, "市属国企":0 };
     rows.forEach(function(r){ c[r["所属类别"]] = (c[r["所属类别"]]||0) + 1; });
@@ -1743,6 +1825,41 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
     if(d) d.textContent = n || 0;
   }
 
+  // 数字滚动（首屏统计）
+  function countUp(el, to, ms){
+    if(!el) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduce || !window.requestAnimationFrame){ el.textContent = to; return; }
+    var dur = ms || 900, t0 = null;
+    el.textContent = "0";
+    function step(ts){
+      if(t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 3);            // easeOutCubic
+      el.textContent = Math.round(to * e);
+      if(p < 1) requestAnimationFrame(step); else el.textContent = to;
+    }
+    requestAnimationFrame(step);
+  }
+
+  // 卡片逐个「浮现」：进入视口才动，滚多了也不会一直重播
+  var cardIO = null;
+  if(window.IntersectionObserver){
+    cardIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add("in"); cardIO.unobserve(en.target); }
+      });
+    }, { rootMargin:"180px 0px -2% 0px", threshold:0 });   // 略提前触发，滚动手感更顺
+  }
+  function revealCards(){
+    var cards = document.querySelectorAll("#list .card");
+    for(var i = 0; i < cards.length; i++){
+      var c = cards[i];
+      c.style.animationDelay = Math.min(i, 7) * 34 + "ms";
+      if(cardIO) cardIO.observe(c); else c.classList.add("in");
+    }
+  }
+
   // 留言数：按企业统计，注入卡片上的「留言」按钮
   function paintMsgCounts(){
     var posts = (MSG_CACHE && MSG_CACHE.posts) || [];
@@ -1771,10 +1888,7 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   function closeMsgs(){ $("msgmodal").hidden = true; document.body.style.overflow = ""; }
   $("msgopen").addEventListener("click", function(){ openMsgs(""); });
   $("wallA").addEventListener("click", function(){ openMsgs(""); });
-  $("wallB").addEventListener("click", function(){ openMsgs(""); });
   $("postA").addEventListener("click", function(){
-    window.open(FORM_URL, "_blank", "noopener"); });
-  $("postB").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener"); });
   $("msgclose").addEventListener("click", closeMsgs);
   $("msgmodal").addEventListener("click", function(e){
