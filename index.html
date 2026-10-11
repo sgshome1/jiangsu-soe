@@ -354,6 +354,16 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .msg .tagmsg{font-size:11px; padding:2px 8px; border-radius:980px;
   background:rgba(0,113,227,.10); color:#0060c0}
 @media (max-width:560px){ .fbacts .btn{flex:1 1 auto} }
+.inlineReply{margin:10px 0 0; padding:10px 12px; border-radius:12px; background:#fff;
+  border:1px solid rgba(0,113,227,.25)}
+.inlineReply textarea{width:100%; min-height:62px; font-family:inherit; font-size:13.5px;
+  line-height:1.6; padding:9px 11px; border-radius:10px; border:1px solid rgba(0,0,0,.1);
+  outline:none; resize:vertical}
+.inlineReply textarea:focus{border-color:var(--blue); box-shadow:0 0 0 4px rgba(0,113,227,.12)}
+.inlineReply .iract{display:flex; align-items:center; justify-content:space-between; margin-top:8px}
+.inlineReply .btn{padding:7px 16px; font-size:13px}
+.msg .floor{color:var(--blue); font-weight:600; margin-right:6px}
+
 .compose{margin-top:14px; padding:14px; border:1px solid rgba(0,0,0,.08);
   border-radius:16px; background:#fff}
 .compose .crow{display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap}
@@ -604,7 +614,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-85A0DE5C", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-3A4D30B6", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1055,12 +1065,27 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
         : "还没有留言。下面「我也说一句」，第一条就是你。") + "</p></div>";
       return;
     }
-    box.innerHTML = list.map(function(x){
-      return "<div class='msg'><h5>" + esc(x.company || "未指定企业") + " · " +
-        esc(x.type || "留言") + "</h5><p>" + esc(x.content || "") + "</p><div class='mmeta'>" +
+    var byId = {}; list.forEach(function(x){ byId[x.id] = x; });
+    function floors(x){
+      var kids = list.filter(function(y){ return y.replyTo && y.replyTo === x.id; });
+      return kids.map(function(k){
+        return "<div class='msg kid'><h5>回复 " + esc(x.company || "") + "</h5><p>" +
+          esc(k.content || "") + "</p><div class='mmeta'>" +
+          (k.source ? "<span class='tagmsg'>" + esc(k.source) + "</span>" : "") +
+          "<span>" + esc(k.nick || "匿名") + "</span><span>" + esc(k.time || "") + "</span>" +
+          "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
+          "</div></div>";
+      }).join("");
+    }
+    var tops = list.filter(function(x){ return !x.replyTo || !byId[x.replyTo]; });
+    box.innerHTML = tops.map(function(x, i){
+      return "<div class='msg'><h5><span class='floor'>#" + (i + 1) + "</span>" +
+        esc(x.company || "未指定企业") + (x.type ? " · " + esc(x.type) : "") +
+        "</h5><p>" + esc(x.content || "") + "</p><div class='mmeta'>" +
         (x.source ? "<span class='tagmsg'>" + esc(x.source) + "</span>" : "") +
         "<span>" + esc(x.nick || "匿名") + "</span><span>" + esc(x.time || "") + "</span>" +
-        "</div></div>";
+        "<a href='#' class='replt' data-id='" + esc(x.id) + "' data-co='" + esc(x.company || "") + "'>回复</a>" +
+        "</div>" + floors(x) + "</div>";
     }).join("");
   }
 
@@ -1098,14 +1123,34 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   $("msgnew").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener");
   });
-  var REPLY_TO = "";
   $("msglist").addEventListener("click", function(e){
     var a = e.target.closest(".replt"); if(!a) return;
     e.preventDefault();
-    REPLY_TO = a.getAttribute("data-id") || "";
-    $("cftip").textContent = "正在回复 #" + REPLY_TO + "（可在下方写）";
-    var b = $("cfbody");
-    if(b){ b.value = ""; b.focus(); b.scrollIntoView({ block: "center" }); }
+    var id = a.getAttribute("data-id"), co = a.getAttribute("data-co") || MSG_FILTER;
+    var host = a.closest(".msg");
+    var had = host.querySelector(".inlineReply");
+    document.querySelectorAll(".inlineReply").forEach(function(x){ x.remove(); });
+    if(had) return;
+    var box = document.createElement("div");
+    box.className = "inlineReply";
+    box.innerHTML = "<textarea placeholder='回复这一楼…'></textarea>" +
+      "<div class='iract'><span class='ctip'></span>" +
+      "<button class='btn primary'>回复</button></div>";
+    host.appendChild(box);
+    var ta = box.querySelector("textarea"); ta.focus();
+    box.querySelector("button").addEventListener("click", function(){
+      var btn = this, txt = (ta.value || "").trim();
+      if(txt.length < 2){ box.querySelector(".ctip").textContent = "内容太短"; return; }
+      btn.disabled = true; box.querySelector(".ctip").textContent = "发送中…";
+      fetch(API + "/post", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ company: co, content: txt, nick: "", source: "", replyTo: id })
+      }).then(function(r){ return r.json(); }).then(function(d){
+        btn.disabled = false;
+        if(!d || !d.ok){ box.querySelector(".ctip").textContent = "没发出去：" + ((d && d.err) || ""); return; }
+        box.querySelector(".ctip").textContent = "已盖楼 ✓";
+        setTimeout(function(){ MSG_CACHE = null; loadMsgs(); }, 2500);
+      }).catch(function(){ btn.disabled = false; box.querySelector(".ctip").textContent = "网络出错"; });
+    });
   });
   $("cfsend").addEventListener("click", function(){
     var btn = this, body = ($("cfbody").value || "").trim();
