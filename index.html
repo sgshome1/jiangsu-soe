@@ -686,6 +686,8 @@ html[data-theme="noir"] .ratesec{color:#6fe09a}
 .chip.say:hover,.chip.msg:hover{background:var(--glass)}
 .chip.on{background:linear-gradient(170deg,var(--tint),var(--tint-d)); color:#fff;
   border-color:transparent; box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+/* 「加入对比」两种状态的宽度固定，避免切换文案时整行重排 */
+.chip.cmp{min-width:106px; justify-content:center}
 details{margin:12px 0 0; padding-top:11px; border-top:1px solid var(--sep)}
 summary{color:var(--tint); font-size:13.5px; font-weight:500}
 .srcbox{margin-top:10px; padding:13px 14px; border-radius:18px; background:var(--glass-2);
@@ -879,7 +881,10 @@ html.js-anim .grid .card{opacity:0}
 .grid .card.in{animation:cardIn .58s cubic-bezier(.22,1,.36,1) both}
 .modal:not([hidden]){animation:fadeIn .28s ease both}
 .modal:not([hidden]) .sheet{animation:sheetIn .46s cubic-bezier(.22,1.1,.36,1) both}
-.cmpbar.show{animation:riseIn .4s cubic-bezier(.22,1,.36,1) both}
+/* 对比条的入场动画必须自带 translateX(-50%)，否则会盖掉居中的位移 */
+@keyframes cmpIn{from{opacity:0; transform:translateX(-50%) translateY(18px)}
+  to{opacity:1; transform:translateX(-50%) translateY(0)}}
+.cmpbar.show{animation:cmpIn .4s cubic-bezier(.22,1,.36,1) both}
 body,.card,.topbar .wrap,.controls .wrap,.heroStats,.btn,.chip,.sheet,.tabbar,select,input,
 .tag,.facts dt,.stats2 b,.footer,.srcbox{
   transition:background-color .5s cubic-bezier(.32,.72,0,1),
@@ -1130,6 +1135,13 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   html[data-theme="noir"] .modal .inlineReply textarea{background:rgba(120,120,128,.18)}
   .modal .compose{background:transparent; border:0; padding:0}
   .msglist{max-height:46vh}
+
+  /* 对比条：抬到标签栏之上，并收窄一点，别把屏幕塞满 */
+  .cmpbar{bottom:calc(14px + 65px + 12px); width:calc(100% - 28px); padding:10px 12px;
+    gap:8px; border-radius:22px}
+  .cmpbar .who{gap:6px}
+  .cmpbar .whoitem{font-size:11.5px; padding:4px 6px 4px 10px; max-width:150px}
+  .cmpbar .btn{padding:9px 14px; font-size:13px}
 
   /* 6) 触摸可用性：底部标签栏标签加深到过 4.5:1，点击区抬到 40px 以上 */
   .tabbar button{color:#565e6c}
@@ -1733,7 +1745,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-2EB9208A", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-A8026B71", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1882,7 +1894,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
         "<button class='chip say' data-msg=\"" + esc(nm) + "\">" + ICO.chat + "留言" +
           "<span class='chip-n' data-mcount=\"" + esc(nm) + "\" hidden></span></button>" +
         "<button class='chip" + (picked ? " on" : "") + " cmp' data-id='" + r.id + "'>" +
-          (picked ? ICO.check + "已加入对比" : ICO.cmp + "加入对比") + "</button>" +
+          (picked ? "已加入对比" : ICO.cmp + "加入对比") + "</button>" +
       "</div>" +
       "<details><summary>数据来源与核验</summary>" +
         "<div class='srcbox'>" +
