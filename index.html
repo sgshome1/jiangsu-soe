@@ -288,14 +288,15 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .fpbox b{font-weight:600; letter-spacing:.3px}
 
 /* ---------- compare bar ---------- */
-.cmpbar{position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
+.cmpbar{position:fixed; left:50%; transform:translateX(-50%) translateY(calc(100% + 26px));
   bottom:18px; z-index:7; width:min(940px,calc(100% - 28px));
   background:rgba(255,255,255,.9); border-radius:16px;
   -webkit-backdrop-filter:saturate(180%) blur(24px); backdrop-filter:saturate(180%) blur(24px);
   box-shadow:0 10px 40px rgba(0,0,0,.16); padding:12px 14px;
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-  transition:transform .34s cubic-bezier(.2,.8,.2,1)}
-.cmpbar.show{transform:translateX(-50%) translateY(0)}
+  visibility:hidden;
+  transition:transform .34s cubic-bezier(.2,.8,.2,1), visibility .34s}
+.cmpbar.show{transform:translateX(-50%) translateY(0); visibility:visible}
 .cmpbar .who{display:flex; gap:7px; flex-wrap:wrap; flex:1 1 auto; min-width:0}
 .whoitem{display:inline-flex; align-items:center; gap:6px; font-size:12.5px;
   background:var(--seg); border-radius:980px; padding:5px 6px 5px 12px; max-width:230px}
@@ -945,23 +946,25 @@ html{scroll-behavior:smooth}
 
 /* 手机搜索栏：不再是「一个高胶囊里塞两行」 */
 @media (max-width:900px){
-  .controls{top:64px; margin:12px 14px 0}
+  .controls{top:10px; margin:12px 14px 0}
   .controls .wrap{border-radius:22px; padding:12px}
-  .searchrow{gap:10px}
-  .searchrow .search{flex:1 1 100%}
-  .search input{height:46px; border-radius:16px; font-size:15.5px; padding-left:38px}
-  .search svg{left:14px; width:16px; height:16px}
-  .searchrow .btn{height:46px; border-radius:16px; padding:0 20px;
+  /* 搜索 + 筛选 始终并排一行，省一行高度 */
+  .searchrow{gap:8px; flex-wrap:nowrap}
+  .searchrow .search{flex:1 1 auto; min-width:0}
+  .search input{height:46px; border-radius:16px; font-size:15px; padding-left:36px}
+  .search svg{left:13px; width:15px; height:15px}
+  .searchrow .btn{height:46px; border-radius:16px; padding:0 16px;
     display:inline-flex; align-items:center; justify-content:center}
   /* 手机上只留搜索 + 筛选：链接/重置是桌面用的 */
   .searchrow .act-share,.searchrow .act-reset{display:none}
-  .searchrow .act-filter{flex:1 1 100%}
+  .searchrow .act-filter{flex:0 0 auto}
   .filterblock{padding:14px 0 16px}
 }
 @media (max-width:430px){
   .controls{margin:10px 12px 0}
   .controls .wrap{padding:10px}
   .search input,.searchrow .btn{height:44px; border-radius:14px}
+  .search input{font-size:14.5px}
 }
 
 /* ================= 开场动效 & 手感层 ================= */
@@ -1074,6 +1077,13 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   .themepick{display:none}
   .topbar .wrap{justify-content:flex-start}
 
+  /* 顶部品牌条在手机上已无实际功能（主题在底部「外观」里），整条撤掉，首屏更干净 */
+  .topbar{display:none}
+  .controls{top:10px}
+  /* 首屏的「投稿」「互助吧」在底部标签栏里都有，不再重复；桌面端保留 */
+  .heroCta{display:none}
+  .hero .wrap{padding:22px 20px 4px}
+
   /* 1) 少一层实时模糊：卡片改「高不透明玻璃」、不做 backdrop-filter；
         导航/搜索/标签栏的模糊半径也降下来 —— 手机 GPU 立省一大截 */
   .card{background:var(--glass-card);
@@ -1140,9 +1150,11 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   .modal .compose{background:transparent; border:0; padding:0}
   .msglist{max-height:46vh}
 
-  /* 对比条：抬到标签栏之上，并收窄一点，别把屏幕塞满 */
-  .cmpbar{bottom:calc(14px + 65px + 12px); width:calc(100% - 28px); padding:10px 12px;
-    gap:8px; border-radius:22px}
+  /* 对比条：抬到标签栏之上（含 iPhone 底部安全区），并收窄一点，别把屏幕塞满；
+     收起时的位移要盖过抬高后的距离，别让空条露在下边缘 */
+  .cmpbar{bottom:calc(14px + env(safe-area-inset-bottom) + 65px + 12px);
+    width:calc(100% - 28px); padding:10px 12px; gap:8px; border-radius:22px;
+    transform:translateX(-50%) translateY(calc(100% + 140px))}
   .cmpbar .who{gap:6px}
   .cmpbar .whoitem{font-size:11.5px; padding:4px 6px 4px 10px; max-width:150px}
   .cmpbar .btn{padding:9px 14px; font-size:13px}
@@ -1366,7 +1378,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     <button class="sheetback" id="aboutback" type="button" aria-label="返回">
       <svg viewBox="0 0 24 24"><path d="M14.6 5.6L8.2 12l6.4 6.4"/></svg></button>
     <h3>使用说明与声明</h3>
-    <p class="sm">最后更新 2026-10-11　｜　版本指纹 <span class="fp" id="fp3"></span></p>
+    <p class="sm">最后更新 2026-10-12　｜　版本指纹 <span class="fp" id="fp3"></span></p>
     <div class="docbody aboutbody">
       <nav class="toc" id="toc" aria-label="目录">
         <p class="tochd">目录（点一下跳到对应章节）</p>
@@ -1645,6 +1657,8 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
           <li>2026-10-10：增补 33 家央企在苏主体，形成 832 家完整版。</li>
           <li>2026-10-11：832 行「来源说明」全部改写为可回溯出处；上线企业评论区与互助吧；
             手机端改版（玻璃材质、深色模式、底部标签栏）；新增本说明页。</li>
+          <li>2026-10-12：手机端精简——撤销顶部品牌条，首屏「投稿 / 互助吧」按钮收进底部标签栏；
+            修复对比条偏移与标签栏重叠；「互助留言墙」更名为「互助吧」。</li>
         </ul>
         <button class="tocback" type="button" data-jump="toc">↑ 回到目录</button>
       </section>
@@ -1749,7 +1763,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261012-FF9174FB", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261012-ED011A69", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1967,8 +1981,11 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
       "　覆盖 " + new Set(rows.map(function(r){ return baseCity(r["所属地市"]); })
         .filter(function(c){ return CITY13.indexOf(c) >= 0; })).size +
       " 个设区市 · " + new Set(rows.map(function(r){ return r["板块"]; })).size + " 个板块";
+    // 手机上不放那串长提示（对比入口卡片上就有），只留一句「共 N 家」
+    var narrow = window.innerWidth <= 900;
     $("hint").textContent = rows.length
-      ? "共 " + rows.length + " 家。点卡片上的「加入对比」可挑出最多 4 家横向比较。"
+      ? (narrow ? "共 " + rows.length + " 家"
+                : "共 " + rows.length + " 家。点卡片上的「加入对比」可挑出最多 4 家横向比较。")
       : "";
     $("empty").hidden = rows.length > 0;
     $("more").hidden = rows.length <= state.shown;
