@@ -440,9 +440,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 }
 /* ================= 设计层 · iOS 27 / Liquid Glass ================= */
 :root{
-  --wall-base:#eef1f8;
-  --wall-1:rgba(150,190,255,.85); --wall-2:rgba(205,170,255,.75);
-  --wall-3:rgba(150,235,225,.75); --wall-4:rgba(255,205,170,.70);
+  --wall-base:#e7ecf7;
+  --wall-1:rgba(122,170,255,.95); --wall-2:rgba(196,150,255,.85);
+  --wall-3:rgba(118,226,208,.80); --wall-4:rgba(255,190,150,.80);
   --glass:rgba(255,255,255,.52); --glass-2:rgba(255,255,255,.34);
   --glass-solid:rgba(255,255,255,.76);
   --glass-line:rgba(255,255,255,.62); --glass-hi:rgba(255,255,255,.9);
@@ -471,10 +471,10 @@ body{
   color:var(--label);
   background-color:var(--wall-base);
   background-image:
-    radial-gradient(58% 42% at 10% 2%, var(--wall-1), transparent 62%),
-    radial-gradient(52% 42% at 92% 0%, var(--wall-2), transparent 64%),
-    radial-gradient(70% 52% at 82% 62%, var(--wall-3), transparent 64%),
-    radial-gradient(58% 48% at 6% 78%, var(--wall-4), transparent 62%);
+    radial-gradient(72% 56% at 6% -6%, var(--wall-1), transparent 68%),
+    radial-gradient(62% 52% at 98% -8%, var(--wall-2), transparent 68%),
+    radial-gradient(84% 62% at 90% 56%, var(--wall-3), transparent 68%),
+    radial-gradient(72% 56% at 0% 76%, var(--wall-4), transparent 66%);
   background-attachment:fixed; background-repeat:no-repeat;
   font:17px/1.47 -apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",
        "PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",sans-serif;
@@ -1042,7 +1042,7 @@ document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-2D153E53", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-B0007A2C", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
