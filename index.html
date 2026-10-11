@@ -360,8 +360,8 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   text-decoration:none; color:inherit; transition:transform .16s, box-shadow .16s}
 .thread:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.07)}
 .thread b{font-size:14.5px; font-weight:600; letter-spacing:-.01em}
-.thread .tmeta{display:flex; gap:12px; font-size:12px; color:var(--muted-2)}
-.thread .tmeta i{font-style:normal}
+.thread .tmeta{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:12px; color:var(--muted-2)}
+.thread .tmeta i{font-style:normal; white-space:nowrap}
 .back{color:var(--blue); text-decoration:none; font-size:13px}
 
 .inlineReply{margin:10px 0 0; padding:10px 12px; border-radius:12px; background:#fff;
@@ -626,7 +626,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-D8971073", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-9F0DBA99", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
