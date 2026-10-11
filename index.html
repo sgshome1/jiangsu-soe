@@ -573,7 +573,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-5882C0C2", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-9F45A055", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -745,8 +745,8 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     $("hWeb").textContent = web;
     $("hFav").textContent = FAV.length;
     // 留言条数：页面打开就取一次，让首屏和吸顶栏的角标立刻有数
-    fetch("comments.json").then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.count); } })
+    fetch("board.json").then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){ if(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0); } })
       .catch(function(){});
   }
 
@@ -1007,13 +1007,13 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 
   function renderMsgs(){
     var box = $("msglist");
-    var all = (MSG_CACHE && MSG_CACHE.items) || [];
+    var all = (MSG_CACHE && MSG_CACHE.posts) || [];
     var list = MSG_FILTER
       ? all.filter(function(x){ return (x.company || "").indexOf(MSG_FILTER) >= 0; })
       : all;
     $("msgsub").textContent = MSG_FILTER
       ? "「" + MSG_FILTER + "」的留言：" + list.length + " 条"
-      : "大家提交的纠错、补充与求职经验，共 " + list.length + " 条（每晚自动更新）";
+      : "大家提交的纠错、补充与求职经验，共 " + list.length + " 楼";
     if(!MSG_CACHE){
       box.innerHTML = "<div class='msg'><p>正在读取留言…</p></div>";
       return;
@@ -1036,9 +1036,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   function loadMsgs(){
     if(MSG_CACHE){ renderMsgs(); return; }
     renderMsgs();
-    fetch("comments.json?t=" + Date.now())
+    fetch("board.json?t=" + Date.now())
       .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function(d){ MSG_CACHE = d; setWallCount(d.count); renderMsgs(); })
+      .then(function(d){ MSG_CACHE = d; setWallCount(d.posts ? d.posts.length : 0); renderMsgs(); })
       .catch(function(){
         $("msglist").innerHTML = "<div class='msg'><p>留言还没同步过来（数据每晚更新一次）。" +
           "点下面「我也说一句」，你的留言下一次同步就会出现在这里。</p></div>";
