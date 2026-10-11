@@ -849,8 +849,8 @@ mark{background:var(--mark); color:inherit; border-radius:6px}
 .stats2 b{color:var(--label)}
 .theme-note{color:var(--label-2)}
 
-/* 2) 玻璃本体再实一点，字压在背景上更清楚 */
-.card{-webkit-backdrop-filter:blur(22px) saturate(170%); backdrop-filter:blur(22px) saturate(170%)}
+/* 2) 玻璃本体再实一点，字压在背景上更清楚；模糊半径压到 12px（视觉几乎一致，代价小很多） */
+.card{-webkit-backdrop-filter:blur(12px) saturate(170%); backdrop-filter:blur(12px) saturate(170%)}
 .topbar .wrap,.controls .wrap,.heroStats,.cmpbar,.sheet,.tabbar{
   -webkit-backdrop-filter:blur(30px) saturate(180%); backdrop-filter:blur(30px) saturate(180%)}
 
@@ -990,7 +990,7 @@ html[data-theme="noir"] .hero::before{opacity:0;
     radial-gradient(42% 56% at 20% 42%, rgba(40,110,240,.5), transparent 70%),
     radial-gradient(40% 52% at 80% 30%, rgba(140,90,230,.4), transparent 72%)}
 .hero::after{content:""; display:block; position:absolute; top:-35%; left:0; width:38%;
-  height:170%; z-index:1; pointer-events:none; opacity:0; filter:blur(8px);
+  height:170%; z-index:1; pointer-events:none; opacity:0;
   background:linear-gradient(100deg, rgba(255,255,255,0) 0%,
     rgba(255,255,255,.5) 46%, rgba(255,255,255,0) 100%);
   animation:sweep 1.6s cubic-bezier(.4,.08,.2,1) .34s both}
@@ -1127,6 +1127,18 @@ html.scrolled .totop{opacity:1; pointer-events:auto; transform:none}
   html[data-theme="noir"] .modal .inlineReply textarea{background:rgba(120,120,128,.18)}
   .modal .compose{background:transparent; border:0; padding:0}
   .msglist{max-height:46vh}
+
+  /* 6) 触摸可用性：底部标签栏标签加深到过 4.5:1，点击区抬到 40px 以上 */
+  .tabbar button{color:#565e6c}
+  html[data-theme="noir"] .tabbar button{color:rgba(238,238,246,.84)}
+  .tabbar button[data-tab="top"]{color:#0a5ad0}
+  html[data-theme="noir"] .tabbar button[data-tab="top"]{color:#5fa8ff}
+  .card .chip{min-height:40px; padding:8px 14px}
+  .card .star{width:38px; height:38px}
+  .favbtn{min-height:40px; padding:10px 16px}
+  .seg{min-height:38px; display:inline-flex; align-items:center}
+  select{min-height:44px}
+  .themepick button{padding:7px 14px}
 }
 
 /* ================= 弹层左上角返回键（对齐 iOS 圆形返回） ================= */
@@ -1395,7 +1407,7 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-9E5F2078", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-0785743E", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -2338,7 +2350,20 @@ html[data-theme="noir"] .sheetback:hover{background:rgba(255,255,255,.18);
     });
     apply(o);
   })();
-  render();
+  // 首屏先把英雄区的开场动效跑顺，列表等浏览器空闲了再渲染：
+  // 832 条数据 + 60 张卡片是页面上最重的一次主线程工作，放在开场之后不会卡住动画
+  (function(){
+    // 先把列表高度占住，卡片渲染完再交还，避免下方内容被顶一下（布局抖动）
+    var list = $("list");
+    if(list) list.style.minHeight = Math.round(Math.min(window.innerHeight * 0.6, 640)) + "px";
+    var go = function(){
+      render();
+      if(typeof revealCards === "function") revealCards();
+      if(list) list.style.minHeight = "";
+    };
+    if(window.requestIdleCallback) requestIdleCallback(go, { timeout: 700 });
+    else setTimeout(go, 120);
+  })();
 })();
 </script>
 </body>
