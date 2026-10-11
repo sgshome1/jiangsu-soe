@@ -36,16 +36,44 @@ body::before{
 header,section,main{position:relative; z-index:1}
 
 /* ---------- hero ---------- */
-.hero{padding:64px 0 34px; text-align:center}
-.eyebrow{margin:0 0 10px; font-size:12px; font-weight:600; letter-spacing:.14em;
-         color:var(--blue); text-transform:uppercase}
-.hero h1{margin:0; font-size:44px; line-height:1.08; font-weight:700;
-         letter-spacing:-.021em}
-.lede{max-width:640px; margin:16px auto 0; font-size:19px; line-height:1.42;
-      color:var(--muted); letter-spacing:-.01em}
-.fineprint{margin:22px 0 0; font-size:12px; color:var(--muted-2); line-height:1.7}
+.hero{position:relative; padding:70px 0 30px; text-align:center; overflow:hidden}
+.hero::before{content:""; position:absolute; left:50%; top:-330px; width:1100px;
+  height:700px; transform:translateX(-50%); pointer-events:none; z-index:0;
+  background:
+    radial-gradient(44% 52% at 50% 58%, rgba(0,113,227,.13), rgba(0,113,227,0) 72%),
+    radial-gradient(30% 40% at 22% 62%, rgba(90,200,250,.16), rgba(90,200,250,0) 70%),
+    radial-gradient(30% 40% at 78% 62%, rgba(191,90,242,.10), rgba(191,90,242,0) 70%)}
+.hero .wrap{position:relative; z-index:1}
+.eyebrow{display:inline-flex; align-items:center; gap:7px; margin:0 0 16px;
+  padding:6px 14px 6px 11px; border-radius:980px; font-size:12px; font-weight:600;
+  letter-spacing:.06em; color:#0060c0; background:rgba(255,255,255,.72);
+  border:1px solid rgba(0,113,227,.16); box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.eyebrow::before{content:""; width:7px; height:7px; border-radius:50%;
+  background:linear-gradient(140deg,#5cb0ff,#0071e3); box-shadow:0 0 0 3px rgba(0,113,227,.12)}
+.hero h1{margin:0; font-size:52px; line-height:1.06; font-weight:700;
+  letter-spacing:-.028em;
+  background:linear-gradient(180deg,#1d1d1f 30%, #4a4a52 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.lede{max-width:660px; margin:18px auto 0; font-size:19px; line-height:1.46;
+  color:var(--muted); letter-spacing:-.012em}
+.lede b{color:var(--ink-2); font-weight:600}
+.heroStats{display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:28px 0 0}
+.hs{flex:0 0 auto; min-width:124px; padding:13px 20px 12px; border-radius:18px;
+  background:rgba(255,255,255,.78); border:1px solid rgba(0,0,0,.055);
+  box-shadow:0 1px 2px rgba(0,0,0,.03), 0 8px 22px rgba(0,0,0,.05);
+  -webkit-backdrop-filter:saturate(180%) blur(14px); backdrop-filter:saturate(180%) blur(14px);
+  text-align:center; transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s}
+.hs:hover{transform:translateY(-2px); box-shadow:0 2px 6px rgba(0,0,0,.05), 0 14px 30px rgba(0,0,0,.08)}
+.hs b{display:block; font-size:27px; font-weight:600; letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums; line-height:1.15}
+.hs span{display:block; margin-top:3px; font-size:12px; color:var(--muted-2); letter-spacing:.01em}
+.hs.fav b{color:#ff9500}
+.fineprint{margin:26px 0 0; font-size:12px; color:var(--muted-2); line-height:1.8}
 .fineprint b{color:var(--muted); font-weight:600; white-space:nowrap;
-             font-variant-numeric:tabular-nums}
+  font-variant-numeric:tabular-nums}
+.fp{display:inline-block; padding:2px 9px; border-radius:8px;
+  background:rgba(120,120,128,.10); font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px; letter-spacing:-.01em}
 
 /* ---------- controls ---------- */
 .controls{background:rgba(251,251,253,.86); border-bottom:1px solid var(--line);
@@ -107,6 +135,17 @@ select{padding:10px 30px 10px 14px; border:0; border-radius:10px; background:var
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .toolbar label{flex:0 0 auto; display:inline-flex; align-items:center; gap:8px;
   font-size:13px; color:var(--muted)}
+.favbtn{display:inline-flex; align-items:center; gap:7px; font-size:13px;
+  padding:9px 15px; border-radius:980px; flex:0 0 auto}
+.favbtn .ic{width:15px; height:15px; fill:currentColor; color:#c2c2c8;
+  transition:color .18s}
+.favbtn .cnt{font-variant-numeric:tabular-nums; font-size:12px; color:var(--muted-2);
+  transition:color .18s}
+.favbtn:hover .ic{color:#ffab1f}
+.favbtn[aria-pressed="true"]{background:linear-gradient(150deg,#ffd465,#ff9f0a);
+  color:#fff; box-shadow:0 4px 14px rgba(255,159,10,.35)}
+.favbtn[aria-pressed="true"] .ic{color:#fff}
+.favbtn[aria-pressed="true"] .cnt{color:rgba(255,255,255,.85)}
 
 /* ---------- cards ---------- */
 .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(460px,1fr)); gap:18px}
@@ -138,6 +177,17 @@ select{padding:10px 30px 10px 14px; border:0; border-radius:10px; background:var
   line-height:1.32}
 .card .meta{margin:6px 0 0; font-size:12.5px; color:var(--muted-2);
   font-variant-numeric:tabular-nums}
+.star{flex:0 0 auto; width:32px; height:32px; border-radius:50%; display:grid;
+  place-items:center; cursor:pointer; padding:0;
+  border:1px solid rgba(0,0,0,.075); background:rgba(255,255,255,.92);
+  color:#c2c2c8; transition:transform .18s cubic-bezier(.2,.7,.3,1),
+  background .18s, color .18s, border-color .18s, box-shadow .18s}
+.star svg{width:16px; height:16px; fill:currentColor; stroke:none}
+.star:hover{color:#ffab1f; border-color:rgba(255,149,0,.3); transform:scale(1.06)}
+.star:active{transform:scale(.9)}
+.star[aria-pressed="true"]{color:#fff; border-color:transparent;
+  background:linear-gradient(150deg,#ffd465,#ff9f0a);
+  box-shadow:0 4px 14px rgba(255,159,10,.38)}
 .tag{flex:0 0 auto; font-size:11px; font-weight:500; padding:4px 10px; border-radius:980px;
   white-space:nowrap}
 .tag.cen{background:rgba(0,113,227,.10); color:#0060c0}
@@ -272,12 +322,19 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 
 <header class="hero">
   <div class="wrap">
-    <p class="eyebrow">江苏 · 国资</p>
+    <span class="eyebrow">江苏 · 国资</span>
     <h1>江苏央国企名录</h1>
-    <p class="lede">832 家主体，覆盖 13 个地市与 33 个行业板块。按类别、行业、地市检索，
-      一键查官网与招聘，还能把任意几家企业拉出来横向对比。</p>
+    <p class="lede">一次查清 <b>832 家</b>央国企主体：按类别、行业、地市检索，
+      直达<b>官网</b>与<b>官方招聘</b>，还能把任意几家企业拉出来横向对比。</p>
+    <div class="heroStats">
+      <div class="hs"><b id="hTotal">832</b><span>家企业主体</span></div>
+      <div class="hs"><b id="hCity">13</b><span>个设区市</span></div>
+      <div class="hs"><b id="hSector">33</b><span>个行业板块</span></div>
+      <div class="hs"><b id="hWeb">0</b><span>家可直达官网</span></div>
+      <div class="hs fav"><b id="hFav">0</b><span>家已收藏</span></div>
+    </div>
     <p class="fineprint">版权所有 © 2026 圭煜 ｜ 未经授权禁止转载 / 售卖 / 商用 ｜
-      版本指纹 <b id="fp"></b></p>
+      版本指纹 <span class="fp" id="fp"></span></p>
   </div>
 </header>
 
@@ -321,6 +378,10 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 <main class="wrap">
   <div class="toolbar">
     <span class="hint" id="hint"></span>
+    <button class="btn favbtn" id="favbtn" aria-pressed="false" title="只看我收藏的企业">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5 6.1 20.6l1.2-6.5L2.5 9.5l6.6-.9z"/></svg>
+      收藏<span class="cnt" id="favcnt">0</span>
+    </button>
     <label>排序 <select id="sort" aria-label="排序方式">
       <option value="id">序号</option>
       <option value="企业名称">企业名称</option>
@@ -380,7 +441,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-B6D8BF87", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-200CF000", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -394,7 +455,14 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 
   var $ = function(id){ return document.getElementById(id); };
   var state = { q:"", cats:[], sector:"", city:"", level:"", sortK:"id", sortD:1,
-                shown:PAGE, cmp:[] };
+                shown:PAGE, cmp:[], favOnly:false };
+  var FAVKEY = "jsgq_fav_v1";
+  var FAV = [];
+  try { FAV = JSON.parse(localStorage.getItem(FAVKEY) || "[]") || []; } catch(e){ FAV = []; }
+  FAV = FAV.filter(function(x){ return typeof x === "number"; });
+  function saveFav(){
+    try { localStorage.setItem(FAVKEY, JSON.stringify(FAV)); } catch(e){}
+  }
   var CATS = ["央企在苏","省属国企","市属国企"];
   var CAT_CLS = {"央企在苏":"cen","省属国企":"soe","市属国企":"gov"};
   // 江苏 13 个设区市；「苏州（常熟）」这类县级主体按所属设区市归并计数与筛选
@@ -428,6 +496,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   function qccUrl(name){ return "https://aiqicha.baidu.com/s?q=" + encodeURIComponent(name); }
 
   function match(r){
+    if(state.favOnly && FAV.indexOf(r.id) < 0) return false;
     if(state.cats.length && state.cats.indexOf(r["所属类别"]) < 0) return false;
     if(state.sector && r["板块"] !== state.sector) return false;
     if(state.city && baseCity(r["所属地市"]) !== state.city) return false;
@@ -471,6 +540,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     metrics += m("上市代码", p["上市代码"], "");
     var cls = CAT_CLS[r["所属类别"]] || "";
     var mono = nm.replace(/^[（(“"'\s]+/, "").charAt(0) || "·";
+    var faved = FAV.indexOf(r.id) >= 0;
     return "<article class='card " + cls + (picked ? " picked" : "") + "'>" +
       "<div class='chead'>" +
         "<span class='mono " + cls + "'>" + esc(mono) + "</span>" +
@@ -479,6 +549,10 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
           "<p class='meta'>№ " + r.id + "　" + esc(r["所属地市"]) + " · " +
             esc(r["板块"]) + " · " + esc(r["层级"]) + "</p>" +
         "</div>" +
+        "<button class='star' data-fav='" + r.id + "' aria-pressed='" +
+          (faved ? "true" : "false") + "' aria-label='收藏' title='收藏'>" +
+          "<svg viewBox='0 0 24 24'><path d='M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5 " +
+          "6.1 20.6l1.2-6.5L2.5 9.5l6.6-.9z'/></svg></button>" +
         "<span class='tag " + cls + "'>" + esc(r["所属类别"]) + "</span></div>" +
       "<div class='facts'>" +
         "<div><dt>集团归属</dt><dd>" + hi(r["集团归属"], q) + "</dd></div>" +
@@ -514,6 +588,31 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     "</article>";
   }
 
+  function updateFavUI(){
+    var b = $("favbtn");
+    if(b){
+      b.setAttribute("aria-pressed", state.favOnly ? "true" : "false");
+      b.setAttribute("title", state.favOnly ? "正在只看收藏，点击取消" : "只看我收藏的企业");
+    }
+    if($("favcnt")) $("favcnt").textContent = FAV.length;
+    if($("hFav")) $("hFav").textContent = FAV.length;
+  }
+
+  function initHero(){
+    var cities = {}, secs = {}, web = 0;
+    DATA.forEach(function(r){
+      var c = String(r["所属地市"] || "").replace(/[（(].*$/, "").trim();
+      if(CITY13.indexOf(c) >= 0) cities[c] = 1;
+      secs[r["板块"]] = 1;
+      if(r["官网"]) web++;
+    });
+    $("hTotal").textContent = DATA.length;
+    $("hCity").textContent = Object.keys(cities).length;
+    $("hSector").textContent = Object.keys(secs).length;
+    $("hWeb").textContent = web;
+    $("hFav").textContent = FAV.length;
+  }
+
   function render(){
     var rows = sortRows(DATA.filter(match));
     var q = state.q, slice = rows.slice(0, state.shown);
@@ -533,8 +632,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     $("more").hidden = rows.length <= state.shown;
     $("more").textContent = "显示更多（还有 " + (rows.length - state.shown) + " 家）";
     $("sort").value = state.sortK;
+    updateFavUI();
     var fcount = state.cats.length + (state.sector ? 1 : 0) + (state.city ? 1 : 0) +
-                 (state.level ? 1 : 0);
+                 (state.level ? 1 : 0) + (state.favOnly ? 1 : 0);
     var fb = $("fbadge");
     fb.hidden = fcount === 0;
     fb.textContent = fcount;
@@ -622,6 +722,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     return DATA.some(function(r){ return baseCity(r["所属地市"]) === c; });
   }), "全部地市");
   fillsel($("level"), ["一级","二级","三级","四级"], "全部层级");
+  initHero();
 
   $("q").addEventListener("input", function(e){
     state.q = e.target.value.trim(); state.shown = PAGE; render(); });
@@ -644,6 +745,21 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   });
   $("more").addEventListener("click", function(){ state.shown += PAGE * 2; render(); });
   $("list").addEventListener("click", function(e){
+    var st = e.target.closest(".star");
+    if(st){
+      var sid = parseInt(st.dataset.fav, 10), si = FAV.indexOf(sid);
+      if(si >= 0){ FAV.splice(si, 1); } else { FAV.push(sid); }
+      saveFav();
+      var onFav = FAV.indexOf(sid) >= 0;
+      st.setAttribute("aria-pressed", onFav ? "true" : "false");
+      updateFavUI();
+      if(state.favOnly && !onFav){
+        var c = st.closest(".card"); if(c){ c.style.transition = "opacity .22s, transform .22s";
+          c.style.opacity = "0"; c.style.transform = "scale(.97)";
+          setTimeout(function(){ render(); }, 200); }
+      }
+      return;
+    }
     var b = e.target.closest(".cmp"); if(!b) return;
     var id = parseInt(b.dataset.id, 10), i = state.cmp.indexOf(id);
     if(i >= 0){ state.cmp.splice(i, 1); }
@@ -669,6 +785,9 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     }
   });
   $("docmp").addEventListener("click", openCmp);
+  $("favbtn").addEventListener("click", function(){
+    state.favOnly = !state.favOnly; state.shown = PAGE; render();
+  });
   $("clrcmp").addEventListener("click", function(){ state.cmp = []; render(); });
   $("closecmp").addEventListener("click", closeCmp);
   $("modal").addEventListener("click", function(e){ if(e.target === this) closeCmp(); });
@@ -745,6 +864,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     state.cats = fromUrl.cats || [];
     state.sector = fromUrl.sector || ""; state.city = fromUrl.city || "";
     state.level = fromUrl.level || ""; state.sortK = fromUrl.sortK || "id";
+    state.favOnly = !!fromUrl.favOnly;
     $("sector").value = state.sector; $("city").value = state.city;
     $("level").value = state.level; $("sort").value = state.sortK;
     Array.prototype.forEach.call(document.querySelectorAll("#cats .seg"), function(x){
