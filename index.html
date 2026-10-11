@@ -354,6 +354,21 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
 .msg .tagmsg{font-size:11px; padding:2px 8px; border-radius:980px;
   background:rgba(0,113,227,.10); color:#0060c0}
 @media (max-width:560px){ .fbacts .btn{flex:1 1 auto} }
+.compose{margin-top:14px; padding:14px; border:1px solid rgba(0,0,0,.08);
+  border-radius:16px; background:#fff}
+.compose .crow{display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap}
+.compose input,.compose select{flex:1 1 140px; font-family:inherit; font-size:13.5px;
+  padding:9px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.1); outline:none}
+.compose textarea{width:100%; min-height:84px; font-family:inherit; font-size:14px;
+  line-height:1.6; padding:10px 12px; border-radius:10px;
+  border:1px solid rgba(0,0,0,.1); outline:none; resize:vertical}
+.compose input:focus,.compose select:focus,.compose textarea:focus{
+  border-color:var(--blue); box-shadow:0 0 0 4px rgba(0,113,227,.12)}
+.cact{display:flex; align-items:center; justify-content:space-between; margin-top:10px}
+.ctip{font-size:12px; color:var(--muted-2)}
+.msg .replt{color:var(--blue); text-decoration:none; cursor:pointer; margin-left:auto}
+.msg.kid{margin-left:22px; background:linear-gradient(180deg,#fafafc,#f4f4f8);
+  border-left:2px solid rgba(0,113,227,.25)}
 
 @media (max-width:900px){
   .grid{grid-template-columns:1fr}
@@ -556,6 +571,22 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
     <h3>互助留言墙</h3>
     <p class="sm" id="msgsub">大家提交的纠错、补充与求职经验。</p>
     <div class="msglist" id="msglist"></div>
+    <div class="compose">
+      <div class="crow">
+        <input id="cfnick" type="text" maxlength="16" placeholder="昵称（可不填）">
+        <select id="cfsrc">
+          <option value="">信息来源（选填）</option>
+          <option value="官网/政府文件">官网 / 政府文件</option>
+          <option value="内部员工">内部员工</option>
+          <option value="听说/转述">听说 / 转述</option>
+        </select>
+      </div>
+      <textarea id="cfbody" maxlength="1200" placeholder="写点什么……有依据的信息最受欢迎。楼主发帖时，可在下面直接回复别人。"></textarea>
+      <div class="cact">
+        <span class="ctip" id="cftip"></span>
+        <button class="btn primary" id="cfsend">发帖</button>
+      </div>
+    </div>
     <div class="close">
       <button class="btn primary" id="msgnew">我也说一句</button>
       <button class="btn" id="msgclose">关闭</button>
@@ -573,7 +604,7 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   var DATA = JSON.parse(document.getElementById("data").textContent);
   var METHOD = JSON.parse(document.getElementById("method").textContent);
   var PAGE = 60, MAXCMP = 4;
-  var FP = "JSGQ-WEB-20261011-9F45A055", DH = "70F7BD7323D5EE2B";
+  var FP = "JSGQ-WEB-20261011-85A0DE5C", DH = "70F7BD7323D5EE2B";
 
   function makeTrace(){
     var d = new Date();
@@ -1066,6 +1097,36 @@ footer{max-width:1080px; margin:0 auto; padding:44px 22px 110px; color:var(--mut
   $("msgmodal").addEventListener("click", function(e){ if(e.target === this) closeMsgs(); });
   $("msgnew").addEventListener("click", function(){
     window.open(FORM_URL, "_blank", "noopener");
+  });
+  var REPLY_TO = "";
+  $("msglist").addEventListener("click", function(e){
+    var a = e.target.closest(".replt"); if(!a) return;
+    e.preventDefault();
+    REPLY_TO = a.getAttribute("data-id") || "";
+    $("cftip").textContent = "正在回复 #" + REPLY_TO + "（可在下方写）";
+    var b = $("cfbody");
+    if(b){ b.value = ""; b.focus(); b.scrollIntoView({ block: "center" }); }
+  });
+  $("cfsend").addEventListener("click", function(){
+    var btn = this, body = ($("cfbody").value || "").trim();
+    if(!body || body.length < 2){ $("cftip").textContent = "内容太短"; return; }
+    var company = MSG_FILTER || ($("cfcompany") ? $("cfcompany").value.trim() : "");
+    if(!company){ $("cftip").textContent = "请先说明是哪家企业（从企业卡片的「留言」进来会自动带上）"; return; }
+    btn.disabled = true; $("cftip").textContent = "发送中…";
+    fetch(API + "/post", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ company: company, content: body,
+        nick: ($("cfnick").value || "").trim(), source: $("cfsrc").value,
+        replyTo: REPLY_TO })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      btn.disabled = false;
+      if(!d || !d.ok){ $("cftip").textContent = "没发出去：" + ((d && d.err) || "未知原因"); return; }
+      $("cfbody").value = ""; REPLY_TO = "";
+      $("cftip").textContent = "已发布 ✓ 3 秒后刷新列表";
+      setTimeout(function(){ MSG_CACHE = null; loadMsgs(); $("cftip").textContent = ""; }, 3000);
+    }).catch(function(){
+      btn.disabled = false; $("cftip").textContent = "网络出错，稍后再试";
+    });
   });
 
   // 手机端筛选面板
